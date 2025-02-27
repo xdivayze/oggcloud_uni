@@ -16,6 +16,8 @@ import (
 	"gorm.io/gorm"
 )
 
+//TODO write tests
+
 const REFERRAL_CODE_FIELDNAME = "referralCode"
 
 func CreateReferral(c *gin.Context) {
@@ -52,15 +54,6 @@ func CreateReferral(c *gin.Context) {
 }
 
 func VerifyReferral(c *gin.Context) {
-	email := c.Request.Header.Get(model.EMAIL_FIELDNAME)
-	foundUser, err := model.GetUserFromMail(email)
-	if err != nil {
-		c.Status(http.StatusInternalServerError)
-		fmt.Fprintf(os.Stderr, "err occurred while getting user from mail:\n\t%v\n", err)
-		return
-
-	}
-
 	supposedCode := c.Request.Header.Get(REFERRAL_CODE_FIELDNAME)
 	if supposedCode == "" {
 		c.Status(http.StatusBadRequest)
@@ -69,7 +62,7 @@ func VerifyReferral(c *gin.Context) {
 	}
 
 	var foundRef ref_model.Referral
-	if err = db.DB.Where("user_id = ?", foundUser.ID).Where("code = ?", supposedCode).Find(&foundRef).Error; err != nil {
+	if err := db.DB.Where("code = ?", supposedCode).Find(&foundRef).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.Status(http.StatusForbidden)
 			fmt.Fprintf(os.Stderr, "referral code not found:\n\t%v\n", err)

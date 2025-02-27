@@ -23,18 +23,23 @@ func SetupRouter() *gin.Engine {
 	{
 		userRegisterRoutes.POST("/register", registeruser.RegisterUser)
 		userRegisterRoutes.POST("/login", loginuser.LoginUser)
+		
 	}
+
+	r.GET("/api/verify/referral-code", referral.VerifyReferral)
+	
 	protectedRoutes := r.Group("/", authmiddleware.VerifyCodeMiddleware())
 	fileRoutes := protectedRoutes.Group("/api/file")
 	{
 		fileRoutes.POST("/upload", session.HandleFileUpload)
 		fileRoutes.GET("/retrieve", retrieve.HandleRetrieve)
-		fileRoutes.GET("/retrieve/getownerid", retrieve.GetOwnerFileIDFromPreviewID)
+		fileRoutes.GET("/retrieve/get-owner-id", retrieve.GetOwnerFileIDFromPreviewID)
 	}
+	
 	userProtected := protectedRoutes.Group("/api/user/protected")
 	{
 		userProtected.GET("/create-referral", referral.CreateReferral)
-		userProtected.GET("/verify-referral", referral.VerifyReferral)
+		
 	}
 	return r
 }

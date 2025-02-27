@@ -4,21 +4,21 @@ import Navbar from "../../Navbar/Navbar";
 import { useNavigate } from "react-router-dom";
 
 export default function RegisterRefer() {
-    const refercodeRef = useRef("");
+    const referCodeRef = useRef("");
     const submitRef = useRef("")
     const navigate = useNavigate()
     const onSubmitClick = () => {
-        const refcode: string = refercodeRef.current.innerText
-        if (refcode == "") {
-            console.log("error, refcode null")
+        const refCode: string = referCodeRef.current.innerText
+        if (refCode == "") {
+            console.log("error, ref code null")
             return
         }
-        const refcodeTrimmed = refcode.trim() 
-        if (/\s/.test(refcodeTrimmed)) {
-            console.log("error, refcode includes whitespace")
+        const refCodeTrimmed = refCode.trim() 
+        if (/\s/.test(refCodeTrimmed)) {
+            console.log("error, ref code includes whitespace")
             return
         }
-        navigate(refcode.trim())
+        navigate(refCode.trim())
     }
     return (
         <div className="w-full">
@@ -36,7 +36,7 @@ export default function RegisterRefer() {
 
                     <div className="w-full">
                         <ObeseBar
-                            refPassed={refercodeRef}
+                            refPassed={referCodeRef}
                             height="min-h-[110px]"
                             color="text-white bg-teal-ogg-1 hover:text-white hover:bg-indigo-950  text-2xl"
                             text="Enter your referral code"
