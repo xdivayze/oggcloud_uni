@@ -13,7 +13,7 @@ import (
 func LoadDotenv() error {
 	return godotenv.Load()
 }
-
+//TODO fix absolute paths throughout the codebase
 // user access levels????
 // forward requests through a dpi tunnel to surpass censorship
 // implement rate limiting

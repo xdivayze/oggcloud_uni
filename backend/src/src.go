@@ -8,6 +8,7 @@ import (
 	upload "oggcloudserver/src/file_ops/session/Services/upload"
 	"oggcloudserver/src/user/auth"
 	authmiddleware "oggcloudserver/src/user/auth/auth_middleware"
+	"oggcloudserver/src/user/auth/referral"
 	"oggcloudserver/src/user/model"
 	loginuser "oggcloudserver/src/user/routes/login_user"
 	registeruser "oggcloudserver/src/user/routes/register_user"
@@ -29,6 +30,11 @@ func SetupRouter() *gin.Engine {
 		fileRoutes.POST("/upload", session.HandleFileUpload)
 		fileRoutes.GET("/retrieve", retrieve.HandleRetrieve)
 		fileRoutes.GET("/retrieve/getownerid", retrieve.GetOwnerFileIDFromPreviewID)
+	}
+	userProtected := protectedRoutes.Group("/api/user/protected")
+	{
+		userProtected.GET("/create-referral", referral.CreateReferral)
+		userProtected.GET("/verify-referral", referral.VerifyReferral)
 	}
 	return r
 }
