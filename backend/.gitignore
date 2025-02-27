@@ -1,0 +1,4 @@
+.env
+src/oggcrypto/data/masterkey.hex
+backend/go.sum
+go.sum
