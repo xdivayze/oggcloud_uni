@@ -27,12 +27,12 @@ func RegisterUser(c *gin.Context) {
 	var passwordhex string
 	var ecdhclientpub string
 
-	fieldmap := make(map[string]interface{})
-	fieldmap[model.EMAIL_FIELDNAME] = &mail
-	fieldmap[model.PASSWORD_FIELDNAME] = &passwordhex
-	fieldmap[model.ECDH_PUB_FIELDNAME] = &ecdhclientpub
+	fieldMap := make(map[string]interface{})
+	fieldMap[model.EMAIL_FIELDNAME] = &mail
+	fieldMap[model.PASSWORD_FIELDNAME] = &passwordhex
+	fieldMap[model.ECDH_PUB_FIELDNAME] = &ecdhclientpub
 
-	s := functions.DoFieldAssign(c, jsonData, fieldmap)
+	s := functions.DoFieldAssign(c, jsonData, fieldMap)
 	if s != 0 {
 		log.Printf("error doing field assignments, returned:%d", s)
 		return

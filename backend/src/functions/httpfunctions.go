@@ -17,8 +17,8 @@ func FieldAssignment(c *gin.Context, fieldname string, json map[string]interface
 	return field.(string), 0
 }
 
-func DoFieldAssign(c *gin.Context, jsonData map[string]interface{}, fieldmap map[string]interface{}) int {
-	for field, ref := range fieldmap {
+func DoFieldAssign(c *gin.Context, jsonData map[string]interface{}, fieldMap map[string]interface{}) int {
+	for field, ref := range fieldMap {
 		variable := ref.(*string)
 		res, s := FieldAssignment(c, field, jsonData)
 		if s != 0 {

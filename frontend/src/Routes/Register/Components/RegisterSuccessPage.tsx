@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import ObeseBar from "./ObeseBar";
 import Navbar from "../../../Navbar/Navbar";
 
@@ -8,6 +8,18 @@ export default function RegisterSuccess() {
   var passwordRepeatRef = useRef<HTMLDivElement>(null);
   var securityTextRef = useRef<HTMLDivElement>(null);
   var submitRef = useRef<HTMLDivElement>(null);
+  const [passwordText, setPasswordText] = useState(
+    "Enter a password not over 9 characters"
+  );
+  const [passwordStyles, setPasswordStyles] = useState(
+    "text-white bg-teal-ogg-1 hover:text-white hover:bg-indigo-950  text-2xl"
+  );
+
+  const [passwordRepeatText, setPasswordRepeatText] =
+    useState("Repeat password");
+  const [passwordRepeatStyles, setPasswordRepeatStyles] = useState(
+    "text-white bg-teal-ogg-1 hover:text-white hover:bg-indigo-950   text-2xl"
+  );
 
   var onSubmitClick = useCallback(() => {
     console.log("hi man");
@@ -45,9 +57,9 @@ export default function RegisterSuccess() {
                 <ObeseBar
                   refPassed={passwordRef}
                   height="min-h-[110px]"
-                  color="text-white bg-teal-ogg-1 hover:text-white hover:bg-indigo-950  text-2xl"
+                  color={passwordStyles}
                   contentEditable={true}
-                  text="Enter a password not over 9 characters"
+                  text={passwordText}
                 />
               </div>
             </div>
@@ -69,8 +81,8 @@ export default function RegisterSuccess() {
                 <ObeseBar
                   refPassed={passwordRepeatRef}
                   height="min-h-[110px]"
-                  color="text-white bg-teal-ogg-1 hover:text-white hover:bg-indigo-950   text-2xl"
-                  text="Repeat password"
+                  color={passwordRepeatStyles}
+                  text={passwordRepeatText}
                   contentEditable={true}
                 />
               </div>

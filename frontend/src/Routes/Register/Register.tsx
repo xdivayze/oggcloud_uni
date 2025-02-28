@@ -16,7 +16,7 @@ export default function Register() {
   const [searchParams, _] = useSearchParams()
   const successCode = searchParams.get("code")
   if ( successCode === "-1") {
-    return  <RegisterRefer submitColor="bg-red-700" submitText="401 FORBIDDEN" />
+    return  <RegisterRefer submitColor="bg-red-700" submitText="403 FORBIDDEN" />
   }
 
   useEffect(() => {
