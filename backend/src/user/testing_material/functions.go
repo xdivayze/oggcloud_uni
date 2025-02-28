@@ -10,6 +10,7 @@ import (
 	"oggcloudserver/src/file_ops/session/Services/upload"
 	"oggcloudserver/src/oggcrypto"
 	"oggcloudserver/src/user/auth"
+	ref_model "oggcloudserver/src/user/auth/referral/model"
 	"oggcloudserver/src/user/model"
 	"testing"
 
@@ -24,6 +25,7 @@ func FlushDB() {
 	db.DB.Where("1 = 1").Delete(&auth.AuthorizationCode{})
 	db.DB.Where("1 = 1").Delete(&upload.Session{})
 	db.DB.Where("1 = 1").Delete(&file.File{})
+	db.DB.Where("1 = 1").Delete(&ref_model.Referral{})
 }
 
 func GenerateUserJson(t *testing.T) ([]byte, string) {
