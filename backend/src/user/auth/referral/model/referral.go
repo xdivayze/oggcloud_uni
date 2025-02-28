@@ -9,6 +9,7 @@ import (
 type Referral struct {
 	ID         uuid.UUID
 	Code string
+	Used bool
 	CreatedBy  uuid.UUID
 	AcceptedBy *uuid.UUID
 	CreatedAt  time.Time

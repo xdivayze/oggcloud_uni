@@ -5,6 +5,8 @@ import (
 	"log"
 	"oggcloudserver/src"
 	"oggcloudserver/src/oggcrypto"
+	"oggcloudserver/src/user"
+	"oggcloudserver/src/user/testing_material"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -42,8 +44,16 @@ func main() {
 
 	dbl, err := src.GetDB()
 	if err != nil {
-		log.Fatalf("error occured while getting the database:\n\t%v", err)
+		log.Fatalf("error occurred while getting the database:\n\t%v", err)
 	}
+
+	defer testing_material.FlushDB() //development mode 
+	if err = user.CreateAdminUser();err != nil {
+		log.Fatalf("error occurred while creating admin user:\n\t%v", err)
+	}
+
+	
+
 
 	fmt.Print("%w", dbl)
 	r.Run(":5000")

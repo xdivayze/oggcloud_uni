@@ -9,7 +9,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
-        <Route path="register" element={<RegisterRefer />} />
+        <Route path="register" element={<RegisterRefer submitColor="bg-indigo-800" submitText="SUBMIT" />} />
         <Route path="/register/:id" element={<Register />} />
 
       </Route>

@@ -20,6 +20,20 @@ import (
 
 const REFERRAL_CODE_FIELDNAME = "referralCode"
 
+func CreateReferralModel() (*ref_model.Referral, error) {
+	code := make([]byte, 32)
+	if _, err := rand.Read(code); err != nil {
+		fmt.Fprintf(os.Stderr, "err occurred while random byte generation:\n\t%v\n", err)
+		return nil, err
+	}
+	encodedCode := hex.EncodeToString(code)
+	return &ref_model.Referral{
+		ID:   uuid.New(),
+		Code: encodedCode,
+		Used: false,
+	}, nil
+}
+
 func CreateReferral(c *gin.Context) {
 	email := c.Request.Header.Get(model.EMAIL_FIELDNAME)
 	foundUser, err := model.GetUserFromMail(email)
@@ -30,25 +44,22 @@ func CreateReferral(c *gin.Context) {
 
 	}
 
-	code := make([]byte, 32)
-	if _, err = rand.Read(code); err != nil {
+	createdReferral, err := CreateReferralModel()
+	if err != nil {
 		c.Status(http.StatusInternalServerError)
-		fmt.Fprintf(os.Stderr, "err occurred while random byte generation:\n\t%v\n", err)
+		fmt.Fprintf(os.Stderr, "err occurred while creating referral:\n\t%v\n", err)
 		return
 	}
-	encodedCode := hex.EncodeToString(code)
-	if err = db.DB.Model(foundUser).Association("Referrals").Append(&ref_model.Referral{
-		ID:        uuid.New(),
-		Code:      encodedCode,
-		CreatedBy: foundUser.ID,
-	}); err != nil {
+	createdReferral.CreatedBy = foundUser.ID
+
+	if err = db.DB.Model(foundUser).Association("Referrals").Append(createdReferral); err != nil {
 		c.Status(http.StatusInternalServerError)
 		fmt.Fprintf(os.Stderr, "err occurred while getting referral association:\n\t%v\n", err)
 		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		REFERRAL_CODE_FIELDNAME: encodedCode,
+		REFERRAL_CODE_FIELDNAME: createdReferral.Code,
 	})
 
 }
@@ -62,7 +73,7 @@ func VerifyReferral(c *gin.Context) {
 	}
 
 	var foundRef ref_model.Referral
-	if err := db.DB.Where("code = ?", supposedCode).Find(&foundRef).Error; err != nil {
+	if err := db.DB.Where("code = ?", supposedCode).First(&foundRef).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.Status(http.StatusForbidden)
 			fmt.Fprintf(os.Stderr, "referral code not found:\n\t%v\n", err)

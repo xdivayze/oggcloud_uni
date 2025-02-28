@@ -9,6 +9,7 @@ import (
 	"oggcloudserver/src/user/auth"
 	authmiddleware "oggcloudserver/src/user/auth/auth_middleware"
 	"oggcloudserver/src/user/auth/referral"
+	ref_model "oggcloudserver/src/user/auth/referral/model"
 	"oggcloudserver/src/user/model"
 	loginuser "oggcloudserver/src/user/routes/login_user"
 	registeruser "oggcloudserver/src/user/routes/register_user"
@@ -46,6 +47,6 @@ func SetupRouter() *gin.Engine {
 
 func GetDB() (*gorm.DB, error) {
 	err := db.Create_DB()
-	db.DB.AutoMigrate(&model.User{}, &auth.AuthorizationCode{}, &file.File{}, &upload.Session{})
+	db.DB.AutoMigrate(&model.User{}, &auth.AuthorizationCode{}, &file.File{}, &upload.Session{}, &ref_model.Referral{})
 	return db.DB, err
 }

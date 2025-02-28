@@ -1,13 +1,23 @@
 import { useEffect, useState } from "react";
 
-import { useParams } from "react-router-dom";
-import RegisterSuccess from "./RegisterSuccessPage";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import RegisterSuccess from "./Components/RegisterSuccessPage";
+import RegisterRefer from "./RegisterRefer";
 
 export default function Register() {
   const [refCodeValid, setRefCodeValid] = useState(false);
   const [checking, setChecking] = useState(true);
 
-  const { refCode } = useParams();
+  const params = useParams();
+  const refCode = params.id
+
+  const navigate = useNavigate()
+
+  const [searchParams, _] = useSearchParams()
+  const successCode = searchParams.get("code")
+  if ( successCode === "-1") {
+    return  <RegisterRefer submitColor="bg-red-700" submitText="401 FORBIDDEN" />
+  }
 
   useEffect(() => {
     if (typeof refCode !== "string") {
@@ -25,20 +35,20 @@ export default function Register() {
       setChecking(false);
     };
     verifyCode(refCode);
+
   }, []);
-  if (checking) {
-    return <div>Loading...</div>
-  }
   if (!checking) {
-    return refCodeValid ? <RegisterSuccess /> : <div>Failed sad </div>
+    if (!refCodeValid) {
+      navigate("/register?code=-1")
+    } 
+    return <RegisterSuccess />
   }
 }
 
 async function checkRefCode(referral: string): Promise<boolean> {
-  //TODO
-  const verifyApiPath = "/api/user/protected/verify-referral";
+  const verifyApiPath = "/api/verify/referral-code";
   var response = await fetch(verifyApiPath, {
-    method: "POST",
+    method: "GET",
     headers: {
       referralCode: referral.trim(),
     },

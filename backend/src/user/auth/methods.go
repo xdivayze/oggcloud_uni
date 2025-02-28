@@ -10,6 +10,7 @@ import (
 	"github.com/google/uuid"
 )
 
+
 func CreateInstance(userID uuid.UUID) (*AuthorizationCode, error) {
 	bytes := make([]byte, CODE_LENGTH)
 	if _, err := rand.Read(bytes); err != nil {
