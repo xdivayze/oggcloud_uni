@@ -10,12 +10,12 @@ export default function RegisterRefer({
   submitText: string;
   submitColor: string;
 }) {
-  const referCodeRef = useRef("");
-  const submitRef = useRef("");
+  const referCodeRef = useRef<HTMLDivElement>(null);
+  const submitRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   const onSubmitClick = () => {
-    const refCode: string = referCodeRef.current.innerText;
+    const refCode: string = referCodeRef.current === null ? "" : referCodeRef.current.innerText;
     if (refCode == "") {
       console.log("error, ref code null");
       return;
@@ -26,7 +26,6 @@ export default function RegisterRefer({
       return;
     }
     navigate(`/register/${refCode.trim()}`);
-    debugger
   };
   return (
     <div className="w-full">
