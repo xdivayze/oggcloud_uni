@@ -1,6 +1,10 @@
 import { useCallback, useRef, useState } from "react";
 import ObeseBar from "./ObeseBar";
 import Navbar from "../../../Navbar/Navbar";
+import { IDoRegister } from "../Services/Register";
+import { useParams } from "react-router-dom";
+import { DoPasswordOperations } from "../Services/PasswordServices";
+import { DoCheckMailValidity } from "../Services/MailServices";
 
 export default function RegisterSuccess() {
   var emailRef = useRef<HTMLDivElement>(null);
@@ -8,25 +12,61 @@ export default function RegisterSuccess() {
   var passwordRepeatRef = useRef<HTMLDivElement>(null);
   var securityTextRef = useRef<HTMLDivElement>(null);
   var submitRef = useRef<HTMLDivElement>(null);
+
   const [passwordText, setPasswordText] = useState(
     "Enter a password not over 9 characters"
   );
   const [passwordStyles, setPasswordStyles] = useState(
-    "text-white bg-teal-ogg-1 hover:text-white hover:bg-indigo-950  text-2xl"
+    "text-white bg-teal-ogg-1 hover:text-white hover:bg-indigo-950 text-2xl"
+  );
+
+  const [mailText, setMailText] = useState(
+    "Enter your email(e.g. example@example.org)"
+  );
+  const [mailStyles, setMailStyles] = useState(
+    "text-white bg-teal-ogg-1 hover:text-white hover:bg-indigo-950 text-2xl"
   );
 
   const [passwordRepeatText, setPasswordRepeatText] =
     useState("Repeat password");
   const [passwordRepeatStyles, setPasswordRepeatStyles] = useState(
-    "text-white bg-teal-ogg-1 hover:text-white hover:bg-indigo-950   text-2xl"
+    "text-white bg-teal-ogg-1 hover:text-white hover:bg-indigo-950 text-2xl"
   );
 
+  const params = useParams();
+  const refCode = params.id as string;
   var onSubmitClick = useCallback(() => {
-    console.log("hi man");
+    var registerInterface: IDoRegister = {
+      password: "",
+      email: "",
+      securityText: "",
+      referralCode: refCode,
+      ecdhPrivate: "",
+    };
 
-    var email = emailRef.current;
-    console.log(`${email != null ? email.innerText : "err"}`); //TODO continue from here adding fetch requests
+    const passwd = passwordRef.current;
+    const passwdRepeat = passwordRepeatRef.current;
+
+    const passwordHash = DoPasswordOperations(
+      passwd,
+      passwdRepeat,
+      setPasswordStyles,
+      setPasswordRepeatStyles,
+      setPasswordText,
+      setPasswordRepeatText
+    );
+
+    passwordHash !== "" ? (registerInterface.password = passwordHash) : void 0; //password stuff ends here
+
+    DoCheckMailValidity(emailRef.current, setMailText, setMailStyles) 
+      ? (registerInterface.email = emailRef.current?.innerText as string)
+      : void 0; //mail stuff ends here
+
+    
+    
+
   }, []);
+
   return (
     <div className="min-h-full ml-7 mr-7">
       <div className="pt-14 min-h-1/5">
@@ -46,8 +86,8 @@ export default function RegisterSuccess() {
                 <ObeseBar
                   refPassed={emailRef}
                   height="min-h-[110px]"
-                  color="text-white bg-teal-ogg-1 hover:text-white hover:bg-indigo-950  text-2xl"
-                  text="Enter your email(e.g. example@example.org)"
+                  color={mailStyles}
+                  text={mailText}
                   contentEditable={true}
                 />
               </div>
