@@ -8,6 +8,8 @@ import (
 	"oggcloudserver/src/user"
 	"oggcloudserver/src/user/testing_material"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/joho/godotenv"
 )
@@ -48,11 +50,24 @@ func main() {
 		log.Fatalf("error occurred while getting the database:\n\t%v", err)
 	}
 
-	defer testing_material.FlushDB() //development mode 
+	sigs := make(chan os.Signal, 1) 
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+	go func() {
+		for {
+			 <-sigs
+			onShutdown()
+		}
+	}()
+
 	if err = user.CreateAdminUser();err != nil {
 		log.Fatalf("error occurred while creating admin user:\n\t%v", err)
 	}
 
 	fmt.Print("%w", dbl)
 	r.Run(":5000")
+}
+
+func onShutdown() {
+	testing_material.FlushDB() //development mode 
+	fmt.Fprintln(os.Stdout, "Shutting down... Goodnight")
 }

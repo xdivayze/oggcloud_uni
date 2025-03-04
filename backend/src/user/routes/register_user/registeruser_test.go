@@ -47,7 +47,7 @@ func TestRegisterUser(t *testing.T) {
 	t.Logf("responseBody:\n\t%s\n", w.Body.String())
 	_, res := model.GetUserFromMail(testing_material.EXAMPLE_MAIL)
 	if res != nil {
-		t.Fatalf("error occured while getting user from database:\n\t%v\n", res.Error())
+		t.Fatalf("error occurred while getting user from database:\n\t%v\n", res.Error())
 	}
 
 	var jsonData map[string]interface{}
@@ -65,10 +65,10 @@ func TestRegisterUser(t *testing.T) {
 	}
 	_, res = model.GetUserFromID(uuuid)
 	if res != nil {
-		t.Fatalf("error occured while getting user from database by ID:\n\t%v\n", res.Error())
+		t.Fatalf("error occurred while getting user from database by ID:\n\t%v\n", res.Error())
 	}
 	_, res = model.GetUserFromMail(testing_material.EXAMPLE_MAIL)
 	if res != nil {
-		t.Fatalf("error occured while getting user from database:\n\t%v\n", res.Error())
+		t.Fatalf("error occurred while getting user from database:\n\t%v\n", res.Error())
 	}
 }
