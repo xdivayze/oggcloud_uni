@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, RefObject, SetStateAction } from "react";
 
 export enum StatusCodes {
   Success = "",
@@ -15,7 +15,7 @@ export enum StatusCodes {
 export interface ComponentDispatchStruct {
   setStyle:Dispatch<SetStateAction<string>>
   setText:Dispatch<SetStateAction<string>>
-  compRef:HTMLDivElement | null
+  compRef:RefObject< HTMLDivElement | null> 
   originalStyle: string
 }
 

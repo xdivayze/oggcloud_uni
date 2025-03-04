@@ -1,32 +1,39 @@
 import { hkdf } from "@noble/hashes/hkdf";
-import { ComponentDispatchStruct, ERR_MODE_STYLES, StatusCodes } from "./Register";
+import {
+  ComponentDispatchStruct,
+  ERR_MODE_STYLES,
+  StatusCodes,
+} from "./Register";
 import { createHash } from "crypto";
 import { sha256 } from "@noble/hashes/sha256";
 
-import { Buffer } from "buffer/"; 
-
+import { Buffer } from "buffer/";
 
 const ECDH_PRIVATE_STORAGE_FIELD = "ecdhPrivate";
 const AES_PRIVATE_STORAGE_FIELD = "masterKey";
 
 export default async function GenerateKeys(
-
   securityTextCompStruct: ComponentDispatchStruct
-
 ): Promise<{
   code: StatusCodes;
   masterKey?: Buffer | null;
   ecdhPub?: string | null;
 }> {
+  const {
+    compRef: securityTextE,
+    setStyle: setSecurityTextStyles,
+    setText: setSecurityTextText,
+    originalStyle,
+  } = securityTextCompStruct;
+  setSecurityTextStyles(originalStyle);
 
-  const {compRef: securityTextE, setStyle: setSecurityTextStyles, setText: setSecurityTextText, originalStyle} = securityTextCompStruct
-  setSecurityTextStyles(originalStyle)
-  if (securityTextE === null) {
+  if (securityTextE.current === null) {
     setSecurityTextText(StatusCodes.ErrNull);
     setSecurityTextStyles(ERR_MODE_STYLES);
     return { code: StatusCodes.ErrNull };
   }
-  const securityText = securityTextE.innerText;
+
+  const securityText = securityTextE.current.innerText;
   if (securityText.trim().length < 16) {
     setSecurityTextText(StatusCodes.ErrNull);
     setSecurityTextStyles(ERR_MODE_STYLES);
@@ -35,6 +42,7 @@ export default async function GenerateKeys(
   const securityHash = createHash("sha256")
     .update(securityText.trim())
     .digest();
+
   const derivedKey = hkdf(sha256, securityHash, "", "ECDH Key", 32);
 
   const ecdhSecret = await crypto.subtle.generateKey(
@@ -47,11 +55,14 @@ export default async function GenerateKeys(
     "spki",
     ecdhSecret.publicKey
   );
-  const ECDHPublicB64Pem = formatAsPem(
+  var ECDHPublicB64Pem = "";
+
+  ECDHPublicB64Pem = formatAsPem(
     Buffer.from(exportedECDHPublic).toString("base64")
   );
+
   const exportedECDHPrivate = await crypto.subtle.exportKey(
-    "spki",
+    "pkcs8",
     ecdhSecret.privateKey
   );
 

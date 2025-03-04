@@ -25,14 +25,20 @@ export function DoPasswordOperations(
   setPasswordRepeatStyles(originalPasswordRepeatStyle);
   setPasswordStyles(ogPasswdStyle);
 
-  if (passwd === null) {
+
+
+  if (passwd.current === null) {
+    setPasswordText(StatusCodes.ErrNull);
+    setPasswordStyles(ERR_MODE_STYLES);
     return "";
   }
-  if (passwdRepeat === null) {
+  if (passwdRepeat.current === null) {
+    setPasswordRepeatStyles(ERR_MODE_STYLES);
+    setPasswordRepeatText(StatusCodes.ErrNull);
     return "";
   }
-  const passwordContent = passwd.innerText;
-  const passwordRepeatContent = passwdRepeat.innerText;
+  const passwordContent = passwd.current.innerText;
+  const passwordRepeatContent = passwdRepeat.current.innerText;
 
   const { code, data } = CheckPasswordValidity(
     passwordContent,

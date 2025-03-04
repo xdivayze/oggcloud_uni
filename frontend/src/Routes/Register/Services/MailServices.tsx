@@ -2,6 +2,7 @@
 import { ComponentDispatchStruct, ERR_MODE_STYLES, StatusCodes } from "./Register";
 
 function CheckMailValidity(mailRef: HTMLDivElement | null): StatusCodes {
+  
   if (mailRef === null) {
     return StatusCodes.ErrNull;
   }
@@ -23,10 +24,10 @@ function CheckMailValidity(mailRef: HTMLDivElement | null): StatusCodes {
 export function DoCheckMailValidity(
   mailCompStruct: ComponentDispatchStruct
 ):boolean {
-
+  
   const {compRef: mailRef, setStyle: setMailStyles, setText: setMailText, originalStyle} = mailCompStruct
   setMailStyles(originalStyle)
-  const returnCode = CheckMailValidity(mailRef);
+  const returnCode = CheckMailValidity(mailRef.current);
   if (returnCode !== StatusCodes.Success) {
     setMailStyles(
       ERR_MODE_STYLES

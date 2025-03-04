@@ -28,7 +28,7 @@ export default function RegisterSuccess() {
   const passwordCompStruct: ComponentDispatchStruct = {
     setStyle: setPasswordStyles,
     setText: setPasswordText,
-    compRef: passwordRef.current,
+    compRef: passwordRef,
     originalStyle: useRef(passwordStyles).current,
   };
 
@@ -42,7 +42,7 @@ export default function RegisterSuccess() {
   const mailCompStruct: ComponentDispatchStruct = {
     setStyle: setMailStyles,
     setText: setMailText,
-    compRef: emailRef.current,
+    compRef: emailRef,
     originalStyle: useRef(mailStyles).current,
   };
 
@@ -55,7 +55,7 @@ export default function RegisterSuccess() {
   const passwordRepeatCompStruct: ComponentDispatchStruct = {
     setStyle: setPasswordRepeatStyles,
     setText: setPasswordRepeatText,
-    compRef: passwordRepeatRef.current,
+    compRef: passwordRepeatRef,
     originalStyle: useRef(passwordRepeatStyles).current,
   };
 
@@ -69,7 +69,7 @@ export default function RegisterSuccess() {
   const securityTextCompStruct: ComponentDispatchStruct = {
     setStyle: setSecurityTextStyles,
     setText: setSecurityTextText,
-    compRef: securityTextRef.current,
+    compRef: securityTextRef,
     originalStyle: useRef(securityTextStyles).current,
   };
 
@@ -89,7 +89,6 @@ export default function RegisterSuccess() {
     );
 
     passwordHash !== "" ? (registerInterface.password = passwordHash) : void 0; //password stuff ends here
-
     DoCheckMailValidity(mailCompStruct)
       ? (registerInterface.email = emailRef.current?.innerText as string)
       : void 0; //mail stuff ends here

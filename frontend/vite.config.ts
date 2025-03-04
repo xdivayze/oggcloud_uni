@@ -8,8 +8,9 @@ export default defineConfig({
   resolve:{
     alias: {
       crypto: 'crypto-browserify',
-      buffer: "buffer",
-      stream: "stream-browserify"
+      buffer: "buffer/",
+      stream: "stream-browserify",
+      util: "util/"
 
     }
   },
