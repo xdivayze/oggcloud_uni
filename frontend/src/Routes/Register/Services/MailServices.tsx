@@ -1,5 +1,5 @@
-import { Dispatch, SetStateAction } from "react";
-import { StatusCodes } from "./Register";
+
+import { ComponentDispatchStruct, ERR_MODE_STYLES, StatusCodes } from "./Register";
 
 function CheckMailValidity(mailRef: HTMLDivElement | null): StatusCodes {
   if (mailRef === null) {
@@ -21,14 +21,15 @@ function CheckMailValidity(mailRef: HTMLDivElement | null): StatusCodes {
 }
 
 export function DoCheckMailValidity(
-  mailRef: HTMLDivElement | null,
-  setMailText: Dispatch<SetStateAction<string>>,
-  setMailStyles: Dispatch<SetStateAction<string>>
+  mailCompStruct: ComponentDispatchStruct
 ):boolean {
+
+  const {compRef: mailRef, setStyle: setMailStyles, setText: setMailText, originalStyle} = mailCompStruct
+  setMailStyles(originalStyle)
   const returnCode = CheckMailValidity(mailRef);
   if (returnCode !== StatusCodes.Success) {
     setMailStyles(
-      "bg-red-700 hover:text-white hover:bg-indigo-950 text-2xl text-white"
+      ERR_MODE_STYLES
     );
     setMailText(returnCode);
     return false;

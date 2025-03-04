@@ -13,11 +13,16 @@
     "@noble/curves": "^1.8.1",
     "@noble/hashes": "^1.7.1",
     "@tailwindcss/vite": "^4.0.8",
-    "@types/node": "^22.13.8",
+    "@types/node": "^22.13.9",
+    "browserify": "^17.0.1",
+    "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.1",
+    "node-browserify": "^1.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.2.0",
+    "stream": "^0.0.3",
+    "stream-browserify": "^3.0.0",
     "tailwindcss": "^4.0.8"
   },
   "devDependencies": {
@@ -31,6 +36,7 @@
     "globals": "^15.14.0",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.22.0",
-    "vite": "^6.1.0"
+    "vite": "^6.1.0",
+    "vite-plugin-node-polyfills": "^0.23.0"
   }
 }

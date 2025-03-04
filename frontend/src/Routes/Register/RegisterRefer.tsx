@@ -21,8 +21,8 @@ export default function RegisterRefer({
       return;
     }
     const refCodeTrimmed = refCode.trim();
-    if (/\s/.test(refCodeTrimmed) || refCodeTrimmed.length != 32) {
-      console.log("error, ref code includes whitespace or is greater than 32 characters");
+    if (/\s/.test(refCodeTrimmed) || refCodeTrimmed.length != 64) {
+      console.log("error, ref code includes whitespace or is greater than 64 characters");
       return;
     }
     navigate(`/register/${refCode.trim()}`);

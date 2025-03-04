@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react";
+
 export enum StatusCodes {
   Success = "",
   ErrWhiteSpace = "Password includes whitespace",
@@ -6,15 +8,24 @@ export enum StatusCodes {
   ErrCryptographicFault = "Error occurred while processing your password",
   ErrMailMalformed = "E-Mail address structure is invalid",
   ErrNull = "Field is empty",
-  ErrSecurityTextTooShort="Security text must be over 16 characters"
+  ErrSecurityTextTooShort="Security text must be over 16 characters",
+
 }
+
+export interface ComponentDispatchStruct {
+  setStyle:Dispatch<SetStateAction<string>>
+  setText:Dispatch<SetStateAction<string>>
+  compRef:HTMLDivElement | null
+  originalStyle: string
+}
+
+export const ERR_MODE_STYLES = "bg-red-700 hover:text-white hover:bg-indigo-950 text-2xl text-white"
 
 export interface IDoRegister {
   email: string;
   password: string; //hash before request
-  securityText: string; //process into ecdhPrivate
   referralCode: string; //use to update used status of referral code
-  ecdhPrivate: string;
+  ecdhPub: string;
 }
 
 export default function DoRegister(iDoRegister: IDoRegister) {

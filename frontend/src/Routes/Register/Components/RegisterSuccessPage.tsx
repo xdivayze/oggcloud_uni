@@ -1,10 +1,15 @@
 import { useCallback, useRef, useState } from "react";
 import ObeseBar from "./ObeseBar";
 import Navbar from "../../../Navbar/Navbar";
-import { IDoRegister } from "../Services/Register";
+import {
+  ComponentDispatchStruct,
+  IDoRegister,
+  StatusCodes,
+} from "../Services/Register";
 import { useParams } from "react-router-dom";
 import { DoPasswordOperations } from "../Services/PasswordServices";
 import { DoCheckMailValidity } from "../Services/MailServices";
+import GenerateKeys from "../Services/KeyGenerationService";
 
 export default function RegisterSuccess() {
   var emailRef = useRef<HTMLDivElement>(null);
@@ -20,6 +25,13 @@ export default function RegisterSuccess() {
     "text-white bg-teal-ogg-1 hover:text-white hover:bg-indigo-950 text-2xl"
   );
 
+  const passwordCompStruct: ComponentDispatchStruct = {
+    setStyle: setPasswordStyles,
+    setText: setPasswordText,
+    compRef: passwordRef.current,
+    originalStyle: useRef(passwordStyles).current,
+  };
+
   const [mailText, setMailText] = useState(
     "Enter your email(e.g. example@example.org)"
   );
@@ -27,11 +39,39 @@ export default function RegisterSuccess() {
     "text-white bg-teal-ogg-1 hover:text-white hover:bg-indigo-950 text-2xl"
   );
 
+  const mailCompStruct: ComponentDispatchStruct = {
+    setStyle: setMailStyles,
+    setText: setMailText,
+    compRef: emailRef.current,
+    originalStyle: useRef(mailStyles).current,
+  };
+
   const [passwordRepeatText, setPasswordRepeatText] =
     useState("Repeat password");
   const [passwordRepeatStyles, setPasswordRepeatStyles] = useState(
     "text-white bg-teal-ogg-1 hover:text-white hover:bg-indigo-950 text-2xl"
   );
+
+  const passwordRepeatCompStruct: ComponentDispatchStruct = {
+    setStyle: setPasswordRepeatStyles,
+    setText: setPasswordRepeatText,
+    compRef: passwordRepeatRef.current,
+    originalStyle: useRef(passwordRepeatStyles).current,
+  };
+
+  const [securityTextText, setSecurityTextText] = useState(
+    "Enter arbitrary text not surpassing 32 characters, do save it somewhere secure and not lose it"
+  );
+  const [securityTextStyles, setSecurityTextStyles] = useState(
+    "text-white bg-teal-ogg-1 hover:text-white hover:bg-indigo-950  text-2xl"
+  );
+
+  const securityTextCompStruct: ComponentDispatchStruct = {
+    setStyle: setSecurityTextStyles,
+    setText: setSecurityTextText,
+    compRef: securityTextRef.current,
+    originalStyle: useRef(securityTextStyles).current,
+  };
 
   const params = useParams();
   const refCode = params.id as string;
@@ -39,32 +79,28 @@ export default function RegisterSuccess() {
     var registerInterface: IDoRegister = {
       password: "",
       email: "",
-      securityText: "",
       referralCode: refCode,
-      ecdhPrivate: "",
+      ecdhPub: "",
     };
 
-    const passwd = passwordRef.current;
-    const passwdRepeat = passwordRepeatRef.current;
-
     const passwordHash = DoPasswordOperations(
-      passwd,
-      passwdRepeat,
-      setPasswordStyles,
-      setPasswordRepeatStyles,
-      setPasswordText,
-      setPasswordRepeatText
+      passwordCompStruct,
+      passwordRepeatCompStruct
     );
 
     passwordHash !== "" ? (registerInterface.password = passwordHash) : void 0; //password stuff ends here
 
-    DoCheckMailValidity(emailRef.current, setMailText, setMailStyles) 
+    DoCheckMailValidity(mailCompStruct)
       ? (registerInterface.email = emailRef.current?.innerText as string)
       : void 0; //mail stuff ends here
 
-    
-    
-
+    GenerateKeys(securityTextCompStruct).then(({ code, ecdhPub }) => {
+      code === StatusCodes.Success
+        ? (registerInterface.ecdhPub = ecdhPub as string)
+        : void 0; //encryption stuff ends here
+    }).catch((e:Error) => {
+      console.error(e)
+    });
   }, []);
 
   return (
@@ -110,8 +146,8 @@ export default function RegisterSuccess() {
                 <ObeseBar
                   refPassed={securityTextRef}
                   height="min-h-[370px]"
-                  color="text-white bg-teal-ogg-1 hover:text-white hover:bg-indigo-950  text-2xl"
-                  text="Enter arbitrary text not surpassing 32 characters, do save it somewhere secure and not lose it"
+                  color={securityTextStyles}
+                  text={securityTextText}
                   contentEditable={true}
                 />
               </div>

@@ -1,15 +1,30 @@
 import { createHash } from "crypto";
-import { StatusCodes } from "./Register";
-
+import {
+  ComponentDispatchStruct,
+  ERR_MODE_STYLES,
+  StatusCodes,
+} from "./Register";
 
 export function DoPasswordOperations(
-  passwd: HTMLDivElement | null,
-  passwdRepeat: HTMLDivElement | null,
-  setPasswordStyles: React.Dispatch<React.SetStateAction<string>>,
-  setPasswordRepeatStyles: React.Dispatch<React.SetStateAction<string>>,
-  setPasswordText: React.Dispatch<React.SetStateAction<string>>,
-  setPasswordRepeatText: React.Dispatch<React.SetStateAction<string>>
+  passwordCompStruct: ComponentDispatchStruct,
+  passwordRepeatCompStruct: ComponentDispatchStruct
 ): string {
+  const {
+    compRef: passwd,
+    setStyle: setPasswordStyles,
+    setText: setPasswordText,
+    originalStyle: ogPasswdStyle,
+  } = passwordCompStruct;
+  const {
+    compRef: passwdRepeat,
+    setStyle: setPasswordRepeatStyles,
+    setText: setPasswordRepeatText,
+    originalStyle: originalPasswordRepeatStyle,
+  } = passwordRepeatCompStruct;
+
+  setPasswordRepeatStyles(originalPasswordRepeatStyle);
+  setPasswordStyles(ogPasswdStyle);
+
   if (passwd === null) {
     return "";
   }
@@ -25,13 +40,9 @@ export function DoPasswordOperations(
   );
   if (code !== StatusCodes.Success) {
     setPasswordText(code);
-    setPasswordStyles(
-      "bg-red-700 hover:text-white hover:bg-indigo-950 text-2xl text-white"
-    );
+    setPasswordStyles(ERR_MODE_STYLES);
     if (code === StatusCodes.ErrDontMatch) {
-      setPasswordRepeatStyles(
-        "bg-red-700 hover:text-white hover:bg-indigo-950 text-2xl text-white"
-      );
+      setPasswordRepeatStyles(ERR_MODE_STYLES);
 
       setPasswordRepeatText(code);
     }
@@ -40,8 +51,10 @@ export function DoPasswordOperations(
   return data;
 }
 
-
-export function CheckPasswordValidity(p1: string, p2: string ): {
+export function CheckPasswordValidity(
+  p1: string,
+  p2: string
+): {
   code: StatusCodes;
   data: string;
 } {
@@ -61,4 +74,3 @@ export function CreatePasswordHash(s1: string): string {
   const hashedPassword = createHash("sha256").update(s1).digest("hex");
   return hashedPassword;
 }
-
