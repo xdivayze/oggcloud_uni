@@ -9,7 +9,9 @@ import (
 	"oggcloudserver/src/file_ops/file"
 	"oggcloudserver/src/file_ops/session/Services/upload"
 	"oggcloudserver/src/oggcrypto"
+	"oggcloudserver/src/user"
 	"oggcloudserver/src/user/auth"
+	"oggcloudserver/src/user/auth/referral"
 	ref_model "oggcloudserver/src/user/auth/referral/model"
 	"oggcloudserver/src/user/model"
 	"testing"
@@ -29,6 +31,7 @@ func FlushDB() {
 }
 
 func GenerateUserJson(t *testing.T) ([]byte, string) {
+	user.CreateAdminUser()
 	randomBytes := make([]byte, 60)
 	_, err := rand.Read(randomBytes)
 	if err != nil {
@@ -46,9 +49,10 @@ func GenerateUserJson(t *testing.T) ([]byte, string) {
 	}
 
 	data, err := json.Marshal(map[string]interface{}{
-		model.EMAIL_FIELDNAME:       EXAMPLE_MAIL,
-		model.PASSWORD_FIELDNAME:    randomString,
-		model.ECDH_PUB_FIELDNAME: pemBlock,
+		model.EMAIL_FIELDNAME:            EXAMPLE_MAIL,
+		model.PASSWORD_FIELDNAME:         randomString,
+		model.ECDH_PUB_FIELDNAME:         pemBlock,
+		referral.REFERRAL_CODE_FIELDNAME: user.AdminReferral,
 	})
 
 	if err != nil {

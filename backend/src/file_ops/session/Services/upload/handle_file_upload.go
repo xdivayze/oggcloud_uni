@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-const DIRECTORY_BASE = "/home/cavej/repositories/oggcloud_dev/backend/Storage/Files"
+const DIRECTORY_BASE = "/home/cavej/repositories/oggcloud_dev/backend/Storage/Files" //TODO fix value absolute path 
 
 var DirectorySession string
 

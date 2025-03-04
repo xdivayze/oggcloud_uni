@@ -12,7 +12,8 @@ import (
 
 const PASSWORD_FIELDNAME = "password"
 const EMAIL_FIELDNAME = "email"
-const ECDH_PUB_FIELDNAME = "ecdh_public"
+const ECDH_PUB_FIELDNAME = "ecdhPublic"
+
 
 type User struct {
 	ID                 uuid.UUID `gorm:"type:uuid;primaryKey"`

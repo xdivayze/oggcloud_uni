@@ -1,6 +1,8 @@
 
 import { ComponentDispatchStruct, ERR_MODE_STYLES, StatusCodes } from "./Register";
 
+export const MAIL_FIELDNAME = "email"
+
 function CheckMailValidity(mailRef: HTMLDivElement | null): StatusCodes {
   
   if (mailRef === null) {
@@ -18,6 +20,7 @@ function CheckMailValidity(mailRef: HTMLDivElement | null): StatusCodes {
   if (mail.lastIndexOf(".") < atIndex) {
     return StatusCodes.ErrMailMalformed;
   }
+  window.localStorage.setItem(MAIL_FIELDNAME, mail)
   return StatusCodes.Success;
 }
 
@@ -35,5 +38,6 @@ export function DoCheckMailValidity(
     setMailText(returnCode);
     return false;
   }
+
   return true;
 }

@@ -16,6 +16,7 @@ func LoadDotenv() error {
 	return godotenv.Load()
 }
 //TODO fix absolute paths throughout the codebase
+//TODO request a demo referral, the user will be destroyed within 2 hours of registration
 // user access levels????
 // forward requests through a dpi tunnel to surpass censorship
 // implement rate limiting
@@ -37,8 +38,8 @@ func main() {
 		log.Fatal("Error loading .env file %w", err)
 	}
 
-	pguri := os.Getenv("POSTGRES_URI")
-	fmt.Println(pguri)
+	pgURI := os.Getenv("POSTGRES_URI")
+	fmt.Println(pgURI)
 
 	r := src.SetupRouter()
 
@@ -51,9 +52,6 @@ func main() {
 	if err = user.CreateAdminUser();err != nil {
 		log.Fatalf("error occurred while creating admin user:\n\t%v", err)
 	}
-
-	
-
 
 	fmt.Print("%w", dbl)
 	r.Run(":5000")

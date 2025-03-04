@@ -5,6 +5,8 @@ import {
   StatusCodes,
 } from "./Register";
 
+const PASSWORD_FIELDNAME = "passwordHash";
+
 export function DoPasswordOperations(
   passwordCompStruct: ComponentDispatchStruct,
   passwordRepeatCompStruct: ComponentDispatchStruct
@@ -24,8 +26,6 @@ export function DoPasswordOperations(
 
   setPasswordRepeatStyles(originalPasswordRepeatStyle);
   setPasswordStyles(ogPasswdStyle);
-
-
 
   if (passwd.current === null) {
     setPasswordText(StatusCodes.ErrNull);
@@ -54,6 +54,7 @@ export function DoPasswordOperations(
     }
     return "";
   }
+  window.localStorage.setItem(PASSWORD_FIELDNAME, data);
   return data;
 }
 
@@ -62,7 +63,7 @@ export function CheckPasswordValidity(
   p2: string
 ): {
   code: StatusCodes;
-  data: string;
+  data: string; //returns password hash
 } {
   if (p1.length > 9) {
     return { code: StatusCodes.ErrPasswordTooLong, data: "" };

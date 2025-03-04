@@ -8,17 +8,20 @@ import (
 	"oggcloudserver/src"
 	"oggcloudserver/src/db"
 	"oggcloudserver/src/user/model"
-	"testing"
 	"oggcloudserver/src/user/testing_material"
+	"testing"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
+
 //TODO check for
 //faulty e mail
 
 
 
 func TestRegisterUser(t *testing.T) {
+	
 	testing_material.LoadDotEnv(t)
 	testing_material.LoadDB(t)
 	defer db.DB.Where("1 = 1").Delete(&model.User{})
@@ -27,6 +30,7 @@ func TestRegisterUser(t *testing.T) {
 	r := src.SetupRouter()
 	w := httptest.NewRecorder()
 
+	
 	data, _ := testing_material.GenerateUserJson(t)
 
 	endpoint := "/api/user/register"
