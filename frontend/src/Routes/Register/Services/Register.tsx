@@ -33,6 +33,6 @@ export default function DoRegister(iDoRegister: IDoRegister) {
   const jsonBody = {
     email: iDoRegister.email,
     referralCode: iDoRegister.referralCode,
-  };
+  }; //TODO implement register requests
 }
 

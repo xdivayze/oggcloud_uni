@@ -1,8 +1,10 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
+	"net/http"
 	"oggcloudserver/src"
 	"oggcloudserver/src/oggcrypto"
 	"oggcloudserver/src/user"
@@ -10,15 +12,19 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/joho/godotenv"
 )
 
+const SERVER_PORT = 5000
+
 func LoadDotenv() error {
 	return godotenv.Load()
 }
-//TODO fix absolute paths throughout the codebase
-//TODO request a demo referral, the user will be destroyed within 2 hours of registration
+
+// TODO fix absolute paths throughout the codebase
+// TODO request a demo referral, the user will be destroyed within 2 hours of registration
 // user access levels????
 // forward requests through a dpi tunnel to surpass censorship
 // implement rate limiting
@@ -31,7 +37,7 @@ func LoadDotenv() error {
 // When session groups are being created an option to send other users a request to view session??
 // use ecdh for multiple connections to derive a shared key
 // maybe some kind of a config file to load sessions for client
-//TODO SHARED ALBUMS + feature to add stuff to created albums
+// TODO SHARED ALBUMS + feature to add stuff to created albums
 // TODO implement file retrieval
 func main() {
 	defer os.Remove(oggcrypto.MASTERKEY_PATH)
@@ -45,29 +51,42 @@ func main() {
 
 	r := src.SetupRouter()
 
-	dbl, err := src.GetDB()
+	_, err = src.GetDB()
 	if err != nil {
 		log.Fatalf("error occurred while getting the database:\n\t%v", err)
 	}
 
-	sigs := make(chan os.Signal, 1) 
+	srv := &http.Server{
+		Addr:    fmt.Sprintf(":%d", SERVER_PORT),
+		Handler: r,
+	}
+
+	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 	go func() {
 		for {
-			 <-sigs
-			onShutdown()
+			<-sigs
+			
+			onShutdown(srv)
 		}
 	}()
 
-	if err = user.CreateAdminUser();err != nil {
+	if err = user.CreateAdminUser(); err != nil {
 		log.Fatalf("error occurred while creating admin user:\n\t%v", err)
 	}
 
-	fmt.Print("%w", dbl)
-	r.Run(":5000")
+	if err := srv.ListenAndServe(); err != nil {
+		fmt.Println(err)
+	}
+
 }
 
-func onShutdown() {
-	testing_material.FlushDB() //development mode 
+func onShutdown(srv *http.Server) {
+	testing_material.FlushDB() //development mode
 	fmt.Fprintln(os.Stdout, "Shutting down... Goodnight")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	
+	srv.Shutdown(ctx)
+
 }

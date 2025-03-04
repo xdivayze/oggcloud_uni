@@ -13,11 +13,7 @@ export default function Register() {
 
   const navigate = useNavigate()
 
-  const [searchParams, _] = useSearchParams()
-  const successCode = searchParams.get("code")
-  if ( successCode === "-1") {
-    return  <RegisterRefer submitColor="bg-red-700" submitText="403 FORBIDDEN" />
-  }
+  
 
   useEffect(() => {
     if (typeof refCode !== "string") {
@@ -39,7 +35,8 @@ export default function Register() {
   }, []);
   if (!checking) {
     if (!refCodeValid) {
-      navigate("/register?code=-1")
+      navigate(`/register?code=-1`)
+      return
     } 
     return <RegisterSuccess />
   }

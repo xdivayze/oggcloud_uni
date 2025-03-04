@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import ObeseBar from "./Components/ObeseBar";
 import Navbar from "../../Navbar/Navbar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export default function RegisterRefer({
   submitText,
@@ -14,6 +14,14 @@ export default function RegisterRefer({
   const submitRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
+  const [searchParams, _] = useSearchParams()
+    const successCode = searchParams.get("code")
+    if ( successCode === "-1") {
+      submitText = "403 FORBIDDEN"
+      submitColor = "bg-red-700"
+      
+    }
+
   const onSubmitClick = () => {
     const refCode: string = referCodeRef.current === null ? "" : referCodeRef.current.innerText;
     if (refCode == "") {
@@ -22,7 +30,7 @@ export default function RegisterRefer({
     }
     const refCodeTrimmed = refCode.trim();
     if (/\s/.test(refCodeTrimmed) || refCodeTrimmed.length != 64) {
-      console.log("error, ref code includes whitespace or is greater than 64 characters");
+      console.log("error, ref code includes whitespace or is not 64 characters");
       return;
     }
     navigate(`/register/${refCode.trim()}`);
