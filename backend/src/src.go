@@ -7,12 +7,12 @@ import (
 	"oggcloudserver/src/file_ops/session/Services/retrieve"
 	upload "oggcloudserver/src/file_ops/session/Services/upload"
 	"oggcloudserver/src/user/auth"
-	authmiddleware "oggcloudserver/src/user/auth/auth_middleware"
+	auth_middleware "oggcloudserver/src/user/auth/auth_middleware"
 	"oggcloudserver/src/user/auth/referral"
 	ref_model "oggcloudserver/src/user/auth/referral/model"
 	"oggcloudserver/src/user/model"
-	loginuser "oggcloudserver/src/user/routes/login_user"
-	registeruser "oggcloudserver/src/user/routes/register_user"
+	login_user "oggcloudserver/src/user/routes/login_user"
+	register_user "oggcloudserver/src/user/routes/register_user"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -22,25 +22,25 @@ func SetupRouter() *gin.Engine {
 	r := gin.Default()
 	userRegisterRoutes := r.Group("/api/user")
 	{
-		userRegisterRoutes.POST("/register", registeruser.RegisterUser)
-		userRegisterRoutes.POST("/login", loginuser.LoginUser)
-		
+		userRegisterRoutes.POST("/register", register_user.RegisterUser)
+		userRegisterRoutes.POST("/login", login_user.LoginUser)
+
 	}
 
 	r.GET("/api/verify/referral-code", referral.VerifyReferral)
-	
-	protectedRoutes := r.Group("/", authmiddleware.VerifyCodeMiddleware())
+
+	protectedRoutes := r.Group("/", auth_middleware.VerifyCodeMiddleware())
 	fileRoutes := protectedRoutes.Group("/api/file")
 	{
 		fileRoutes.POST("/upload", session.HandleFileUpload)
 		fileRoutes.GET("/retrieve", retrieve.HandleRetrieve)
 		fileRoutes.GET("/retrieve/get-owner-id", retrieve.GetOwnerFileIDFromPreviewID)
 	}
-	
+
 	userProtected := protectedRoutes.Group("/api/user/protected")
 	{
 		userProtected.GET("/create-referral", referral.CreateReferral)
-		
+
 	}
 	return r
 }

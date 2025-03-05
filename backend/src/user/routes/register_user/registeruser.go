@@ -1,4 +1,4 @@
-package registeruser
+package register_user
 
 import (
 	"fmt"
@@ -15,7 +15,6 @@ import (
 )
 
 // TODO email check
-// TODO implement invitation code
 func RegisterUser(c *gin.Context) {
 	log.SetPrefix("ERROR: ")
 	var jsonData map[string]interface{}
@@ -42,7 +41,7 @@ func RegisterUser(c *gin.Context) {
 		return
 	}
 	id := uuid.New()
-	if res, err := processReferral(referralCode, id,c); !res  { //TODO add referral to tests
+	if res, err := processReferral(referralCode, id, c); !res {
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "error occurred while processing referral:\n\t%v\n", err)
 			return
@@ -56,13 +55,13 @@ func RegisterUser(c *gin.Context) {
 		return
 	}
 
-	sharedKey, serverPub, err := model.GenerateAndEncryptSharedKey(ecdhClientPub) //salt is prepended to sharedkey
+	sharedKey, serverPub, err := model.GenerateAndEncryptSharedKey(ecdhClientPub) //salt is prepended to shared key
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "error occurred registering user"})
 		log.Printf("error occurred while generating and encrypting the shared key:\n\t%v\n", err)
 		return
 	}
-	
+
 	user := model.User{
 		ID:            id,
 		Email:         mail,

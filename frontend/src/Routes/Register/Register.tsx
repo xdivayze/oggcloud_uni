@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import RegisterSuccess from "./Components/RegisterSuccessPage";
-import RegisterRefer from "./RegisterRefer";
+
 
 export default function Register() {
   const [refCodeValid, setRefCodeValid] = useState(false);
@@ -44,7 +44,7 @@ export default function Register() {
 
 async function checkRefCode(referral: string): Promise<boolean> {
   const verifyApiPath = "/api/verify/referral-code";
-  var response = await fetch(verifyApiPath, {
+  const response = await fetch(verifyApiPath, {
     method: "GET",
     headers: {
       referralCode: referral.trim(),

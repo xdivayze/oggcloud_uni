@@ -1,13 +1,12 @@
 import { hkdf } from "@noble/hashes/hkdf";
 import {
   ComponentDispatchStruct,
-  ERR_MODE_STYLES,
-  StatusCodes,
 } from "./Register";
 import { createHash } from "crypto";
 import { sha256 } from "@noble/hashes/sha256";
 
 import { Buffer } from "buffer/";
+import { ERR_MODE_STYLES, StatusCodes } from "./utils";
 
 const ECDH_PRIVATE_STORAGE_FIELD = "ecdhPrivate";
 const AES_PRIVATE_STORAGE_FIELD = "masterKey";
@@ -55,7 +54,7 @@ export default async function GenerateKeys(
     "spki",
     ecdhSecret.publicKey
   );
-  var ECDHPublicB64Pem = "";
+  let ECDHPublicB64Pem = "";
 
   ECDHPublicB64Pem = formatAsPem(
     Buffer.from(exportedECDHPublic).toString("base64")
@@ -83,7 +82,7 @@ export default async function GenerateKeys(
 }
 
 function formatAsPem(s: string): string {
-  var finalString = "-----BEGIN PUBLIC KEY-----\n";
+  let finalString = "-----BEGIN PUBLIC KEY-----\n";
   while (s.length > 0) {
     finalString += s.substring(0, 64) + "\n";
     s = s.substring(64);

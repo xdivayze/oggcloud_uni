@@ -1,4 +1,4 @@
-package registeruser_test
+package register_user_test
 
 import (
 	"bytes"

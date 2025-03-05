@@ -1,9 +1,8 @@
 import { createHash } from "crypto";
 import {
   ComponentDispatchStruct,
-  ERR_MODE_STYLES,
-  StatusCodes,
 } from "./Register";
+import { ERR_MODE_STYLES, StatusCodes } from "./utils";
 
 const PASSWORD_FIELDNAME = "passwordHash";
 

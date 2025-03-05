@@ -1,4 +1,4 @@
-package registeruser
+package register_user
 
 import (
 	"encoding/hex"
@@ -18,30 +18,28 @@ const PASSWORD_LENGTH = 9
 
 var ErrPasswordTooLong = fmt.Errorf("password length exceeds %d characters", PASSWORD_LENGTH)
 
-func processPassword(c *gin.Context, passwordhex string) (string, error) {
-	hexpass, err := hex.DecodeString(passwordhex)
+func processPassword(c *gin.Context, passwordHex string) (string, error) {
+	hexPass, err := hex.DecodeString(passwordHex)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "error occured registering user"})
-		return "", fmt.Errorf("error occured while generating bytes from hex:\n\t%w", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "error occurred registering user"})
+		return "", fmt.Errorf("error occurred while generating bytes from hex:\n\t%w", err)
 	}
 
-	if len(hexpass) > PASSWORD_LENGTH*8 {
+	if len(hexPass) > PASSWORD_LENGTH*8 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": ErrPasswordTooLong.Error()})
 		return "", ErrPasswordTooLong
 	}
 
-	bcryptPass, err := bcrypt.GenerateFromPassword(hexpass, bcrypt.DefaultCost)
+	bcryptPass, err := bcrypt.GenerateFromPassword(hexPass, bcrypt.DefaultCost)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "error occured registering user"})
-		return "", fmt.Errorf("error occured while generating bcrypt:\n\t%w", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "error occurred registering user"})
+		return "", fmt.Errorf("error occurred while generating bcrypt:\n\t%w", err)
 	}
 	return string(bcryptPass), nil
 
 }
 
-
-
-func processReferral(referralCode string,  id uuid.UUID,c *gin.Context) (bool, error) {
+func processReferral(referralCode string, id uuid.UUID, c *gin.Context) (bool, error) {
 	var supposedReferral = model.Referral{}
 	if err := db.DB.Where("code = ?", referralCode).Where("used = ?", false).First(&supposedReferral).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -49,7 +47,7 @@ func processReferral(referralCode string,  id uuid.UUID,c *gin.Context) (bool, e
 			return false, nil
 		}
 		c.Status(http.StatusInternalServerError)
-		return false,fmt.Errorf("err occurred while getting instance from db:\n\t%w", err)
+		return false, fmt.Errorf("err occurred while getting instance from db:\n\t%w", err)
 	}
 	supposedReferral.Used = true
 	supposedReferral.AcceptedBy = &id
@@ -58,4 +56,4 @@ func processReferral(referralCode string,  id uuid.UUID,c *gin.Context) (bool, e
 		return false, fmt.Errorf("error occurred while saving instance to db:\n\t%w ", err)
 	}
 	return true, nil
-} 
+}

@@ -1,5 +1,6 @@
 
-import { ComponentDispatchStruct, ERR_MODE_STYLES, StatusCodes } from "./Register";
+import { ComponentDispatchStruct} from "./Register";
+import { StatusCodes, ERR_MODE_STYLES } from "./utils";
 
 export const MAIL_FIELDNAME = "email"
 
