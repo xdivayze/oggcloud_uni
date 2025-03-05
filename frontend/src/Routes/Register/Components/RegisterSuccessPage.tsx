@@ -1,22 +1,19 @@
 import { useCallback, useRef, useState } from "react";
 import ObeseBar from "./ObeseBar";
 import Navbar from "../../../Navbar/Navbar";
-import {
-  ComponentDispatchStruct,
-  IDoRegister,
-  StatusCodes,
-} from "../Services/Register";
+import { ComponentDispatchStruct } from "../Services/Register";
 import { useParams } from "react-router-dom";
 import { DoPasswordOperations } from "../Services/PasswordServices";
 import { DoCheckMailValidity } from "../Services/MailServices";
 import GenerateKeys from "../Services/KeyGenerationService";
+import { IDoRegister, StatusCodes } from "../Services/utils";
 
 export default function RegisterSuccess() {
-  var emailRef = useRef<HTMLDivElement>(null);
-  var passwordRef = useRef<HTMLDivElement>(null);
-  var passwordRepeatRef = useRef<HTMLDivElement>(null);
-  var securityTextRef = useRef<HTMLDivElement>(null);
-  var submitRef = useRef<HTMLDivElement>(null);
+  const emailRef = useRef<HTMLDivElement>(null);
+  const passwordRef = useRef<HTMLDivElement>(null);
+  const passwordRepeatRef = useRef<HTMLDivElement>(null);
+  const securityTextRef = useRef<HTMLDivElement>(null);
+  const submitRef = useRef<HTMLDivElement>(null);
 
   const [passwordText, setPasswordText] = useState(
     "Enter a password not over 9 characters"
@@ -75,8 +72,8 @@ export default function RegisterSuccess() {
 
   const params = useParams();
   const refCode = params.id as string;
-  var onSubmitClick = useCallback(() => {
-    var registerInterface: IDoRegister = {
+  const onSubmitClick = useCallback(() => {
+    const registerInterface: IDoRegister = {
       password: "",
       email: "",
       referralCode: refCode,
@@ -89,17 +86,18 @@ export default function RegisterSuccess() {
     );
 
     passwordHash !== "" ? (registerInterface.password = passwordHash) : void 0; //password stuff ends here
-    DoCheckMailValidity(mailCompStruct)
-      ? (registerInterface.email = emailRef.current?.innerText as string)
-      : void 0; //mail stuff ends here
+    
+    DoCheckMailValidity(mailCompStruct) ? (registerInterface.email = emailRef.current?.innerText as string) : void 0; //mail stuff ends here
 
-    GenerateKeys(securityTextCompStruct).then(({ code, ecdhPub }) => {
-      code === StatusCodes.Success
-        ? (registerInterface.ecdhPublic = ecdhPub as string)
-        : void 0; //encryption stuff ends here
-    }).catch((e:Error) => {
-      console.error(e)
-    });
+    GenerateKeys(securityTextCompStruct)
+      .then(({ code, ecdhPub }) => {
+        code === StatusCodes.Success
+          ? (registerInterface.ecdhPublic = ecdhPub as string)
+          : void 0; //encryption stuff ends here
+      })
+      .catch((e: Error) => {
+        console.error(e);
+      });
   }, []);
 
   return (

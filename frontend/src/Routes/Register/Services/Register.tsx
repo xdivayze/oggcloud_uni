@@ -8,14 +8,25 @@ export interface ComponentDispatchStruct {
   originalStyle: string;
 }
 
-export function DoRegister(iDoRegister: IDoRegister) {
+export async function DoRegister(iDoRegister: IDoRegister) {
+  const registerEndpoint = "/api/user/register";
+
   const jsonBody = {
     email: iDoRegister.email,
     referralCode: iDoRegister.referralCode,
     password: iDoRegister.password,
-    ecdhPublic: iDoRegister.ecdhPublic
+    ecdhPublic: iDoRegister.ecdhPublic,
+  };
 
-  }; 
-  
-  //TODO implement register requests
+  const req = await fetch(registerEndpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(jsonBody),
+  }).catch((e: Error) => {
+    throw e;
+  });
+
+  //TODO navigate to page , then, show seed if success otherwise the respective status code
 }
