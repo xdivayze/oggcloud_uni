@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { useNavigate, useParams } from "react-router-dom";
-import RegisterSuccess from "./RegisterSuccessPage";
+import RegisterSuccessRender from "./RegisterSuccessPage";
 
 
 export default function Register() {
@@ -38,7 +38,7 @@ export default function Register() {
       navigate(`/register?code=-1`)
       return
     } 
-    return <RegisterSuccess />
+    return <RegisterSuccessRender />
   }
 }
 

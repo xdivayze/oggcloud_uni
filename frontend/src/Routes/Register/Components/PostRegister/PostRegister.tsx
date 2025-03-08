@@ -1,12 +1,9 @@
-import { useSearchParams } from "react-router-dom";
+import Err from "./Err"
+import UserCreated from "./UserCreated"
 
-export default function PostRegister(  ) {
-    const [searchParams, _] = useSearchParams()
-    let returnElement = <div></div>
-
-    if (searchParams.get("code") as unknown as number !== 201) {
-        
+export default function PostRegister({success}:{success:boolean}) {
+    if (!success) {
+        return <Err />
     }
-
-    return returnElement
+    return <UserCreated />
 }

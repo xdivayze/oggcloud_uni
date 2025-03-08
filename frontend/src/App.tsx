@@ -4,18 +4,25 @@ import Layout from "./Layout";
 import Register from "./Routes/Register/Components/Register";
 import RegisterRefer from "./Routes/Register/Components/RegisterRefer";
 import PostRegister from "./Routes/Register/Components/PostRegister/PostRegister";
+import AuthProvider from "./Protected/AuthProvider";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route index element={<Home />} />
-        <Route path="register" element={<RegisterRefer submitColor="bg-indigo-800" submitText="SUBMIT" />} />
-        <Route path="/register/:id" element={<Register />} />
-        <Route path="/register/post" element={<PostRegister /> } />
+    <AuthProvider>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route
+            path="register"
+            element={
+              <RegisterRefer submitColor="bg-indigo-800" submitText="SUBMIT" />
+            }
+          />
+          <Route path="/register/:id" element={<Register />} />
 
-      </Route>
-    </Routes>
+        </Route>
+      </Routes>
+    </AuthProvider>
   );
 }
 

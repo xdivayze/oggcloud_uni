@@ -1,7 +1,7 @@
-import { Dispatch, RefObject, SetStateAction } from "react";
+import { Dispatch, JSX, RefObject, SetStateAction } from "react";
 import { IDoRegister } from "./utils";
-import { useNavigate } from "react-router-dom";
-
+import PostRegister from "../Components/PostRegister/PostRegister";
+import { Buffer } from "buffer/";
 export interface ComponentDispatchStruct {
   setStyle: Dispatch<SetStateAction<string>>;
   setText: Dispatch<SetStateAction<string>>;
@@ -9,15 +9,17 @@ export interface ComponentDispatchStruct {
   originalStyle: string;
 }
 
-export async function DoRegister(iDoRegister: IDoRegister) {
+export async function DoRegister(
+  iDoRegister: IDoRegister,
+  setRender: Dispatch<SetStateAction<JSX.Element>>
+) {
   const registerEndpoint = "/api/user/register";
-  const navigate = useNavigate()
 
   const jsonBody = {
     email: iDoRegister.email,
     referralCode: iDoRegister.referralCode,
     password: iDoRegister.password,
-    ecdhPublic: iDoRegister.ecdhPublic,
+    ecdhPublic: Buffer.from(iDoRegister.ecdhPublic).toString("hex"),
   };
 
   const req = await fetch(registerEndpoint, {
@@ -26,12 +28,9 @@ export async function DoRegister(iDoRegister: IDoRegister) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(jsonBody),
-  })
+  });
 
-  navigate("/register/post?code=" + req.status)
+  setRender(<PostRegister success={req.status === 201 ? true : false} />);
 
-
-  
-
-  //TODO navigate to page , then, show seed if success otherwise the respective status code
+  return;
 }

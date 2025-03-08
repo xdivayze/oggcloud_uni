@@ -3,6 +3,9 @@ import SpotifyPart from "./Components/SpotifyPart";
 import TextParts from "./Components/TextPart";
 
 export default function Home() {
+
+  
+
   return (
     <div className="min-h-full ml-7 mr-7">
       <div className="pt-14 min-h-1/5">
