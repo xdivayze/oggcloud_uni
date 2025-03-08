@@ -109,7 +109,7 @@ func extractTarGz(r io.Reader, session *Session) error {
 
 	gzipReader, err := gzip.NewReader(f)
 	if err != nil {
-		return fmt.Errorf("error occured while creating new gzip reader:\n\t%w", err)
+		return fmt.Errorf("error occurred while creating new gzip reader:\n\t%w", err)
 	}
 	defer gzipReader.Close()
 	tarReader := tar.NewReader(gzipReader)
