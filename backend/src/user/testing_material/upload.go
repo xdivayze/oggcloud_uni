@@ -26,7 +26,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const TEST_TAR = "/home/cavej/repositories/oggcloud_dev/backend/Storage/testing/uploadtest/test.tar.gz" //TODO fix abs path
+var TEST_TAR = fmt.Sprintf("%s/%s/%s/%s", constants.BACKEND_DIRECTORY, "Storage", "testing/uploadtest", "test.tar.gz") 
 
 var ModeFlush = true
 var UDir string

@@ -2,12 +2,14 @@ package upload
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"log"
+	"oggcloudserver/src/user/constants"
 	"os"
+
+	"github.com/gin-gonic/gin"
 )
 
-const DIRECTORY_BASE = "/home/cavej/repositories/oggcloud_dev/backend/Storage/Files" //TODO fix value absolute path 
+var DIRECTORY_BASE = fmt.Sprintf("%s/%s/%s", constants.BACKEND_DIRECTORY, "Storage", "Files", ) 
 
 var DirectorySession string
 

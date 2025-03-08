@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
+
 	"oggcloudserver/src"
 	"oggcloudserver/src/db"
 	"oggcloudserver/src/file_ops/file"
@@ -14,13 +15,13 @@ import (
 	ref_model "oggcloudserver/src/user/auth/referral/model"
 	"oggcloudserver/src/user/constants"
 	"oggcloudserver/src/user/model"
+
 	"testing"
 
 	"github.com/joho/godotenv"
 )
 
 const EXAMPLE_MAIL = "example@example.org"
-const DOTENV_PATH = "/home/cavej/repositories/oggcloud_dev/backend/.env" //TODO fix abs path
 
 func FlushDB() {
 	db.DB.Where("1 = 1").Delete(&model.User{})
@@ -49,9 +50,9 @@ func GenerateUserJson(t *testing.T) ([]byte, string) {
 	}
 
 	data, err := json.Marshal(map[string]interface{}{
-		constants.EMAIL_FIELDNAME:            EXAMPLE_MAIL,
-		constants.PASSWORD_FIELDNAME:         randomString,
-		constants.ECDH_PUB_FIELDNAME:         pemBlock,
+		constants.EMAIL_FIELDNAME:         EXAMPLE_MAIL,
+		constants.PASSWORD_FIELDNAME:      randomString,
+		constants.ECDH_PUB_FIELDNAME:      pemBlock,
 		constants.REFERRAL_CODE_FIELDNAME: user.AdminReferral,
 	})
 
@@ -69,7 +70,7 @@ func LoadDB(t *testing.T) {
 }
 
 func LoadDotEnv(t *testing.T) {
-	err := godotenv.Load(DOTENV_PATH)
+	err := godotenv.Load(constants.DOTENV_PATH)
 	if err != nil {
 		t.Fatalf("Error loading .env file %v\n", err)
 	}

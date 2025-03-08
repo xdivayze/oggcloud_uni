@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"oggcloudserver/src"
-	"oggcloudserver/src/db"
 	"oggcloudserver/src/user/model"
 	"oggcloudserver/src/user/testing_material"
 	"testing"
@@ -15,8 +14,6 @@ import (
 	"github.com/google/uuid"
 )
 
-//TODO check for
-//faulty e mail
 
 
 
@@ -24,8 +21,8 @@ func TestRegisterUser(t *testing.T) {
 	
 	testing_material.LoadDotEnv(t)
 	testing_material.LoadDB(t)
-	defer db.DB.Where("1 = 1").Delete(&model.User{})
-
+	defer testing_material.FlushDB()
+	//panic("a")
 	gin.SetMode(gin.TestMode)
 	r := src.SetupRouter()
 	w := httptest.NewRecorder()

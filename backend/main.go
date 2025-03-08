@@ -23,7 +23,6 @@ func LoadDotenv() error {
 	return godotenv.Load()
 }
 
-// TODO fix absolute paths throughout the codebase
 // TODO request a demo referral, the user will be destroyed within 2 hours of registration
 // user access levels????
 // forward requests through a dpi tunnel to surpass censorship
@@ -42,7 +41,7 @@ func LoadDotenv() error {
 //create implementation functions for api calls to create non-gin.Context implementations and directly use those functions in tests
 //instead of calling apis 
 // TODO SHARED ALBUMS + feature to add stuff to created albums
-// TODO implement file retrieval
+
 func main() {
 	defer os.Remove(oggcrypto.MASTERKEY_PATH)
 	err := LoadDotenv()
