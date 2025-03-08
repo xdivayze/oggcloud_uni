@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { useNavigate, useParams } from "react-router-dom";
-import RegisterSuccess from "./Components/RegisterSuccessPage";
+import RegisterSuccess from "./RegisterSuccessPage";
 
 
 export default function Register() {

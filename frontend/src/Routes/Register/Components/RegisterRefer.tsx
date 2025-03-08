@@ -1,6 +1,6 @@
 import { useRef } from "react";
-import ObeseBar from "./Components/ObeseBar";
-import Navbar from "../../Navbar/Navbar";
+import ObeseBar from "./ObeseBar";
+import Navbar from "../../../Navbar/Navbar";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 export default function RegisterRefer({

@@ -1,8 +1,9 @@
 import { Route, Routes } from "react-router-dom";
 import Home from "./Routes/Home/Home";
 import Layout from "./Layout";
-import Register from "./Routes/Register/Register";
-import RegisterRefer from "./Routes/Register/RegisterRefer";
+import Register from "./Routes/Register/Components/Register";
+import RegisterRefer from "./Routes/Register/Components/RegisterRefer";
+import PostRegister from "./Routes/Register/Components/PostRegister";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
         <Route index element={<Home />} />
         <Route path="register" element={<RegisterRefer submitColor="bg-indigo-800" submitText="SUBMIT" />} />
         <Route path="/register/:id" element={<Register />} />
+        <Route path="/register/post" element={<PostRegister /> } />
 
       </Route>
     </Routes>

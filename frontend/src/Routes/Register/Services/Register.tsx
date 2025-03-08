@@ -1,5 +1,6 @@
 import { Dispatch, RefObject, SetStateAction } from "react";
 import { IDoRegister } from "./utils";
+import { useNavigate } from "react-router-dom";
 
 export interface ComponentDispatchStruct {
   setStyle: Dispatch<SetStateAction<string>>;
@@ -10,6 +11,7 @@ export interface ComponentDispatchStruct {
 
 export async function DoRegister(iDoRegister: IDoRegister) {
   const registerEndpoint = "/api/user/register";
+  const navigate = useNavigate()
 
   const jsonBody = {
     email: iDoRegister.email,
@@ -24,9 +26,12 @@ export async function DoRegister(iDoRegister: IDoRegister) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(jsonBody),
-  }).catch((e: Error) => {
-    throw e;
-  });
+  })
+
+  navigate("/register/post?code=" + req.status)
+
+
+  
 
   //TODO navigate to page , then, show seed if success otherwise the respective status code
 }
