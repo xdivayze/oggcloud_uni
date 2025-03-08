@@ -3,7 +3,7 @@ import Home from "./Routes/Home/Home";
 import Layout from "./Layout";
 import Register from "./Routes/Register/Components/Register";
 import RegisterRefer from "./Routes/Register/Components/RegisterRefer";
-import PostRegister from "./Routes/Register/Components/PostRegister";
+import PostRegister from "./Routes/Register/Components/PostRegister/PostRegister";
 
 function App() {
   return (

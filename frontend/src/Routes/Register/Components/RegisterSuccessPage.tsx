@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from "react";
 import ObeseBar from "./ObeseBar";
 import Navbar from "../../../Navbar/Navbar";
-import { ComponentDispatchStruct } from "../Services/Register";
+import { ComponentDispatchStruct, DoRegister } from "../Services/Register";
 import { useParams } from "react-router-dom";
 import { DoPasswordOperations } from "../Services/PasswordServices";
 import { DoCheckMailValidity } from "../Services/MailServices";
@@ -86,13 +86,18 @@ export default function RegisterSuccess() {
     );
 
     passwordHash !== "" ? (registerInterface.password = passwordHash) : void 0; //password stuff ends here
-    
-    DoCheckMailValidity(mailCompStruct) ? (registerInterface.email = emailRef.current?.innerText as string) : void 0; //mail stuff ends here
+
+    DoCheckMailValidity(mailCompStruct)
+      ? (registerInterface.email = emailRef.current?.innerText as string)
+      : void 0; //mail stuff ends here
 
     GenerateKeys(securityTextCompStruct)
       .then(({ code, ecdhPub }) => {
         code === StatusCodes.Success
-          ? (registerInterface.ecdhPublic = ecdhPub as string)
+          ? (() => {
+              registerInterface.ecdhPublic = ecdhPub as string;
+              DoRegister(registerInterface);
+            })()
           : void 0; //encryption stuff ends here
       })
       .catch((e: Error) => {
