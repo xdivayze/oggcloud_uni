@@ -35,6 +35,15 @@ func CreateReferralModel() (*ref_model.Referral, error) {
 	}, nil
 }
 
+func GetReferralFromCode(code string) (*ref_model.Referral,error) {
+	dest := ref_model.Referral{}
+	if err := db.DB.Where("code = ?", code).Where("used = ?", false).First(&dest).Error; err != nil {
+		return nil,err
+	}
+	return &dest, nil
+}
+
+
 func CreateReferral(c *gin.Context) {
 	email := c.Request.Header.Get(constants.EMAIL_FIELDNAME)
 	foundUser, err := model.GetUserFromMail(email)
@@ -67,23 +76,29 @@ func CreateReferral(c *gin.Context) {
 
 func VerifyReferral(c *gin.Context) {
 	supposedCode := c.Request.Header.Get(constants.REFERRAL_CODE_FIELDNAME)
-	if supposedCode == "" {
-		c.Status(http.StatusBadRequest)
-		fmt.Fprintf(os.Stderr, "field with name %s not found in the request header\n", constants.REFERRAL_CODE_FIELDNAME)
+	code, verified, err := VerifyReferralImplementation(supposedCode)
+	if !verified {
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "err: \n\t%v\n", err)
+		}
+		if code != 0 {
+			c.Status(code)}
 		return
-	}
+	}  
+	
+}
 
+func VerifyReferralImplementation(supposedCode string) (int, bool, error)  {
+	if supposedCode == "" {
+		return http.StatusBadRequest, false, fmt.Errorf("field with name %s not found in the request header", constants.REFERRAL_CODE_FIELDNAME)
+	}
 	var foundRef ref_model.Referral
 	if err := db.DB.Where("code = ?", supposedCode).First(&foundRef).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			c.Status(http.StatusForbidden)
-			fmt.Fprintf(os.Stderr, "referral code not found:\n\t%v\n", err)
-			return
+			return http.StatusForbidden, false, fmt.Errorf("referral code not found:\n\t%v", err)
 		}
-		c.Status(http.StatusInternalServerError)
-		fmt.Fprintf(os.Stderr, "err occurred while getting referral association:\n\t%v\n", err)
-		return
+		return http.StatusInternalServerError, false,fmt.Errorf("err occurred while getting referral association:\n\t%v", err)
 	}
-	c.Status(http.StatusOK)
+	return 0, true, nil
 
 }

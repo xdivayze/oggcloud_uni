@@ -1,17 +1,20 @@
 package register_user
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"oggcloudserver/src/db"
 	"oggcloudserver/src/functions"
+	"oggcloudserver/src/user/auth/referral"
 	"oggcloudserver/src/user/constants"
 	"oggcloudserver/src/user/model"
 	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 // TODO email check
@@ -41,13 +44,15 @@ func RegisterUser(c *gin.Context) {
 		return
 	}
 	id := uuid.New()
-	if res, err := processReferral(referralCode, id, c); !res {
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "error occurred while processing referral:\n\t%v\n", err)
+	if _, err := referral.GetReferralFromCode(referralCode); err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			c.Status(http.StatusForbidden)
 			return
 		}
+		c.Status(http.StatusInternalServerError)
 		return
 	}
+	
 
 	password, err := processPassword(c, passwordHex)
 	if err != nil {
@@ -72,6 +77,13 @@ func RegisterUser(c *gin.Context) {
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "error occurred registering user"})
 		log.Printf("error occurred while registering user to database:\n\t%v\n", result.Error)
+		return
+	}
+	if res, err := processReferral(referralCode, id, c); !res {
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "error occurred while processing referral:\n\t%v\n", err)
+			return
+		}
 		return
 	}
 

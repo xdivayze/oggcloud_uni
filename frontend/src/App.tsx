@@ -3,7 +3,6 @@ import Home from "./Routes/Home/Home";
 import Layout from "./Layout";
 import Register from "./Routes/Register/Components/Register";
 import RegisterRefer from "./Routes/Register/Components/RegisterRefer";
-import PostRegister from "./Routes/Register/Components/PostRegister/PostRegister";
 import AuthProvider from "./Protected/AuthProvider";
 
 function App() {
