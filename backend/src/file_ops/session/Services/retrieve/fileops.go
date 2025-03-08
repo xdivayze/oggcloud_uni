@@ -19,17 +19,17 @@ import (
 
 func doLoadFileAndStream(c *gin.Context, f *file.File) error {
 
-	var dirtype string
+	var dirType string
 	if f.IsPreview {
-		dirtype = upload.PREVIEW_DIR_NAME
+		dirType = upload.PREVIEW_DIR_NAME
 	} else {
-		dirtype = upload.STORAGE_DIR_NAME
+		dirType = upload.STORAGE_DIR_NAME
 	}
 
-	filePath := fmt.Sprintf("%s/%s/%s/%s/%s", upload.DIRECTORY_BASE, f.UserID, f.SessionID,dirtype, f.FileName)
+	filePath := fmt.Sprintf("%s/%s/%s/%s/%s", upload.DIRECTORY_BASE, f.UserID, f.SessionID,dirType, f.FileName)
 	loadedFile, err := os.Open(filePath)
 	if err != nil {
-		return fmt.Errorf("error occured while loading file")
+		return fmt.Errorf("error occurred while loading file")
 	}
 	defer loadedFile.Close()
 
@@ -38,7 +38,7 @@ func doLoadFileAndStream(c *gin.Context, f *file.File) error {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return fmt.Errorf("no session with file id found")
 		}
-		return fmt.Errorf("error occured while finding session with given id")
+		return fmt.Errorf("error occurred while finding session with given id")
 	}
 
 	pr, pw := io.Pipe()
@@ -64,19 +64,19 @@ func doLoadFileAndStream(c *gin.Context, f *file.File) error {
 		for fname, val := range fieldWriteQueue {
 			err = writer.WriteField(fname, val)
 			if err != nil {
-				pw.CloseWithError(fmt.Errorf("error occured while writing field %s with value %s:\n\t%w", fname, val, err))
+				pw.CloseWithError(fmt.Errorf("error occurred while writing field %s with value %s:\n\t%w", fname, val, err))
 				return 
 			}
 		}
 
 		part, err := writer.CreateFormFile("file", f.FileName)
 		if err != nil {
-			pw.CloseWithError(fmt.Errorf("error occured while trying to create multipart form file:\n\t%w", err))
+			pw.CloseWithError(fmt.Errorf("error occurred while trying to create multipart form file:\n\t%w", err))
 			return
 		}
 		_, err = io.Copy(part, loadedFile)
 		if err != nil {
-			pw.CloseWithError(fmt.Errorf("error occured while trying to copy file buffer into multipart writer:\n\t%w", err))
+			pw.CloseWithError(fmt.Errorf("error occurred while trying to copy file buffer into multipart writer:\n\t%w", err))
 			return
 		}
 
@@ -86,7 +86,7 @@ func doLoadFileAndStream(c *gin.Context, f *file.File) error {
 	c.Status(http.StatusOK)
 
 	if _, err := io.Copy(c.Writer, pr); err != nil {
-		return fmt.Errorf("error occured while streaming file to client:\n\t%w", err)
+		return fmt.Errorf("error occurred while streaming file to client:\n\t%w", err)
 	}
 	wg.Wait()
 

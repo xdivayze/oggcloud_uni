@@ -14,7 +14,7 @@ func HandleFileUploadRequest(c *gin.Context) (*Session, error) {
 
 	file_num, err := strconv.Atoi(c.Request.FormValue("file_count"))
 	if err != nil {
-		return nil, fmt.Errorf("error occured while parsing to int")
+		return nil, fmt.Errorf("error occurred while parsing to int")
 
 	}
 	uid, err := uuid.Parse(c.Request.FormValue("id"))
@@ -39,7 +39,7 @@ func HandleFileUploadRequest(c *gin.Context) (*Session, error) {
 	}
 
 	if res := db.DB.Save(&current_session); res.Error != nil {
-		return nil, fmt.Errorf("error occured while saving instance to DB:\n\t%w", res.Error)
+		return nil, fmt.Errorf("error occurred while saving instance to DB:\n\t%w", res.Error)
 	}
 	return &current_session, nil
 

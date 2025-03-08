@@ -25,7 +25,7 @@ type Session struct {
 func (s *Session) FindOwnedFileWithName(name string) (*file.File, error) {
 	var files []file.File
 	if err := db.DB.Model(s).Association("Files").Find(&files) ; err != nil {
-		return nil, fmt.Errorf("error occured while finding associations:\n\t%w", err)
+		return nil, fmt.Errorf("error occurred while finding associations:\n\t%w", err)
 	}
 	for _, f := range files {
 		if f.FileName == name {

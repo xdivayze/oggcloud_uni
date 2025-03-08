@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"oggcloudserver/src/db"
 	"oggcloudserver/src/functions"
-	"oggcloudserver/src/user/auth/referral"
+	"oggcloudserver/src/user/constants"
 	"oggcloudserver/src/user/model"
 	"os"
 
@@ -30,10 +30,10 @@ func RegisterUser(c *gin.Context) {
 	var referralCode string
 
 	fieldMap := make(map[string]interface{})
-	fieldMap[model.EMAIL_FIELDNAME] = &mail
-	fieldMap[model.PASSWORD_FIELDNAME] = &passwordHex
-	fieldMap[model.ECDH_PUB_FIELDNAME] = &ecdhClientPub
-	fieldMap[referral.REFERRAL_CODE_FIELDNAME] = &referralCode
+	fieldMap[constants.EMAIL_FIELDNAME] = &mail
+	fieldMap[constants.PASSWORD_FIELDNAME] = &passwordHex
+	fieldMap[constants.ECDH_PUB_FIELDNAME] = &ecdhClientPub
+	fieldMap[constants.REFERRAL_CODE_FIELDNAME] = &referralCode
 
 	s := functions.DoFieldAssign(c, jsonData, fieldMap)
 	if s != 0 {

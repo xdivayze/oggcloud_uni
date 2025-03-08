@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"oggcloudserver/src"
-	"oggcloudserver/src/file_ops/session/Services/retrieve"
+	fileops "oggcloudserver/src/file_ops"
 	"oggcloudserver/src/oggcrypto"
 	"oggcloudserver/src/user/auth"
-	"oggcloudserver/src/user/model"
+	"oggcloudserver/src/user/constants"
 	"oggcloudserver/src/user/testing_material"
 	"os"
 	"testing"
@@ -28,7 +28,7 @@ func TestDownloadIntegrityID(t *testing.T) {
 	defer func() {
 		if testing_material.ModeFlush {
 			testing_material.FlushDB()
-			os.RemoveAll(testing_material.Udir)
+			os.RemoveAll(testing_material.UDir)
 		}
 	}()
 
@@ -42,11 +42,11 @@ func TestDownloadIntegrityID(t *testing.T) {
 		req, err := http.NewRequest("GET", endpoint, nil)
 		require.Nil(err)
 
-		req.Header.Set(model.EMAIL_FIELDNAME, testing_material.EXAMPLE_MAIL)
+		req.Header.Set(constants.EMAIL_FIELDNAME, testing_material.EXAMPLE_MAIL)
 		req.Header.Set(auth.AUTH_CODE_FIELDNAME, testing_material.Auth)
-		req.Header.Set(retrieve.PULL_METHOD_FIELD, "offset")
-		req.Header.Set(retrieve.PREVIEW_WISH_FIELD, "true")
-		req.Header.Set(retrieve.OFFSET_FIELD, "0")
+		req.Header.Set(fileops.PULL_METHOD_JSON_FIELDNAME, "offset")
+		req.Header.Set(fileops.PREVIEW_WISH_JSON_FIELDNAME, "true")
+		req.Header.Set(fileops.OFFSET_JSON_FIELDNAME, "0")
 
 		w := httptest.NewRecorder()
 
@@ -83,7 +83,7 @@ func TestDownloadIntegrityID(t *testing.T) {
 		}
 
 		require.Equal(calculatedSum, multipartValMap["checksum"])
-		id = multipartValMap[retrieve.FILE_ID_FIELD]
+		id = multipartValMap[fileops.FILE_ID_JSON_FIELDNAME]
 	}
 
 	require.NotEmpty(id)
@@ -92,11 +92,11 @@ func TestDownloadIntegrityID(t *testing.T) {
 		req, err := http.NewRequest("GET", endpoint, nil)
 		require.Nil(err)
 
-		req.Header.Set(model.EMAIL_FIELDNAME, testing_material.EXAMPLE_MAIL)
+		req.Header.Set(constants.EMAIL_FIELDNAME, testing_material.EXAMPLE_MAIL)
 		req.Header.Set(auth.AUTH_CODE_FIELDNAME, testing_material.Auth)
-		req.Header.Set(retrieve.PULL_METHOD_FIELD, "id")
-		req.Header.Set(retrieve.PREVIEW_WISH_FIELD, "true")
-		req.Header.Set(retrieve.FILE_ID_FIELD, id)
+		req.Header.Set(fileops.PULL_METHOD_JSON_FIELDNAME, "id")
+		req.Header.Set(fileops.PREVIEW_WISH_JSON_FIELDNAME, "true")
+		req.Header.Set(fileops.FILE_ID_JSON_FIELDNAME, id)
 
 		w := httptest.NewRecorder()
 
@@ -134,10 +134,6 @@ func TestDownloadIntegrityID(t *testing.T) {
 
 		require.Equal(calculatedSum, multipartValMap["checksum"])
 	}
-
-
-
-
 
 }
 
@@ -152,7 +148,7 @@ func TestDownloadIntegrity(t *testing.T) {
 	defer func() {
 		if testing_material.ModeFlush {
 			testing_material.FlushDB()
-			os.RemoveAll(testing_material.Udir)
+			os.RemoveAll(testing_material.UDir)
 		}
 	}()
 
@@ -163,11 +159,11 @@ func TestDownloadIntegrity(t *testing.T) {
 	req, err := http.NewRequest("GET", endpoint, nil)
 	require.Nil(err)
 
-	req.Header.Set(model.EMAIL_FIELDNAME, testing_material.EXAMPLE_MAIL)
+	req.Header.Set(constants.EMAIL_FIELDNAME, testing_material.EXAMPLE_MAIL)
 	req.Header.Set(auth.AUTH_CODE_FIELDNAME, testing_material.Auth)
-	req.Header.Set(retrieve.PULL_METHOD_FIELD, "offset")
-	req.Header.Set(retrieve.PREVIEW_WISH_FIELD, "true")
-	req.Header.Set(retrieve.OFFSET_FIELD, "0")
+	req.Header.Set(fileops.PULL_METHOD_JSON_FIELDNAME, "offset")
+	req.Header.Set(fileops.PREVIEW_WISH_JSON_FIELDNAME, "true")
+	req.Header.Set(fileops.OFFSET_JSON_FIELDNAME, "0")
 
 	w := httptest.NewRecorder()
 

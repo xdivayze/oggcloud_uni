@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"oggcloudserver/src/db"
 	"oggcloudserver/src/user/auth"
+	"oggcloudserver/src/user/constants"
 	"oggcloudserver/src/user/model"
 
 	"github.com/gin-gonic/gin"
@@ -11,7 +12,7 @@ import (
 
 func VerifyCodeMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		email := c.Request.Header.Get(model.EMAIL_FIELDNAME)
+		email := c.Request.Header.Get(constants.EMAIL_FIELDNAME)
 		if email == "" {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": "email field doesn't exist in header",

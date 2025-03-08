@@ -11,8 +11,8 @@ import (
 	"oggcloudserver/src/oggcrypto"
 	"oggcloudserver/src/user"
 	"oggcloudserver/src/user/auth"
-	"oggcloudserver/src/user/auth/referral"
 	ref_model "oggcloudserver/src/user/auth/referral/model"
+	"oggcloudserver/src/user/constants"
 	"oggcloudserver/src/user/model"
 	"testing"
 
@@ -20,7 +20,7 @@ import (
 )
 
 const EXAMPLE_MAIL = "example@example.org"
-const DOTENV_PATH = "/home/cavej/repositories/oggcloud_dev/backend/.env"
+const DOTENV_PATH = "/home/cavej/repositories/oggcloud_dev/backend/.env" //TODO fix abs path
 
 func FlushDB() {
 	db.DB.Where("1 = 1").Delete(&model.User{})
@@ -49,10 +49,10 @@ func GenerateUserJson(t *testing.T) ([]byte, string) {
 	}
 
 	data, err := json.Marshal(map[string]interface{}{
-		model.EMAIL_FIELDNAME:            EXAMPLE_MAIL,
-		model.PASSWORD_FIELDNAME:         randomString,
-		model.ECDH_PUB_FIELDNAME:         pemBlock,
-		referral.REFERRAL_CODE_FIELDNAME: user.AdminReferral,
+		constants.EMAIL_FIELDNAME:            EXAMPLE_MAIL,
+		constants.PASSWORD_FIELDNAME:         randomString,
+		constants.ECDH_PUB_FIELDNAME:         pemBlock,
+		constants.REFERRAL_CODE_FIELDNAME: user.AdminReferral,
 	})
 
 	if err != nil {

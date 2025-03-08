@@ -36,18 +36,18 @@ func TestAESEncryption(t *testing.T) {
 		t.Fatalf("error encrypting:\n\t%v", err)
 	}
 
-	decipheredtext, err := oggcrypto.DecryptAES(cipher, key)
+	decipheredText, err := oggcrypto.DecryptAES(cipher, key)
 	{
-		decipheredtext := string(decipheredtext)
+		decipheredText := string(decipheredText)
 		plaintext := string(plaintext)
 		if err != nil {
 			t.Fatalf("decryption failed:\n\t%v", err)
 		}
-		if decipheredtext != plaintext {
-			t.Fatalf("plaintext doesn't match decipheredtext:\n\t%s == %s", plaintext, decipheredtext)
+		if decipheredText != plaintext {
+			t.Fatalf("plaintext doesn't match decipheredText:\n\t%s == %s", plaintext, decipheredText)
 		}
 	}
-	fmt.Fprintf(os.Stdout, "%x\nis equal to\n%x\n",plaintext,decipheredtext)
+	fmt.Fprintf(os.Stdout, "%x\nis equal to\n%x\n",plaintext,decipheredText)
 
 }
 

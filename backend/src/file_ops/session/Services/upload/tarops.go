@@ -22,35 +22,35 @@ var ErrTooEarlyToBeAPreview = errors.New("no owner for preview to be associated 
 
 func extractFile(tarReader *tar.Reader, header *tar.Header, previewMode bool, belongsTo *file.File) error {
 	fw := strings.Split(header.Name, "/")
-	fparts := strings.Split(fw[len(fw)-1], ".")
+	filenameParts := strings.Split(fw[len(fw)-1], ".")
 
-	outfilename := fmt.Sprintf("%s.%s", fparts[0], fparts[1])
+	outfilename := fmt.Sprintf("%s.%s", filenameParts[0], filenameParts[1])
 	outFilePath := fmt.Sprintf("%s/%s", currentWorkingPath, outfilename)
 	outFile, err := os.Create(outFilePath)
 	if err != nil {
-		return fmt.Errorf("error occured while creating file at path %s:\n\t%w", outFilePath, err)
+		return fmt.Errorf("error occurred while creating file at path %s:\n\t%w", outFilePath, err)
 	}
 	defer outFile.Close()
 	bufr := bufio.NewReader(tarReader)
 	bufw := bufio.NewWriter(outFile)
 	if _, err = io.Copy(bufw, bufr); err != nil {
-		return fmt.Errorf("error occured while writing from reader to file:\n\t%w", err)
+		return fmt.Errorf("error occurred while writing from reader to file:\n\t%w", err)
 	}
 	if err = bufw.Flush(); err != nil {
-		return fmt.Errorf("error occured while flushing buffered writer:\n\t%w", err)
+		return fmt.Errorf("error occurred while flushing buffered writer:\n\t%w", err)
 	}
 	var fileObj file.File
 	if res := db.DB.Where("file_name = ?", outfilename).Where("is_preview = ?", previewMode).Find(&fileObj); res.Error != nil {
-		return fmt.Errorf("error occured while searching in database:\n\t%w", err)
+		return fmt.Errorf("error occurred while searching in database:\n\t%w", err)
 	}
 	size := header.FileInfo().Size()
 	fileObj.Size = size
 	if _, err = outFile.Seek(0, io.SeekStart); err != nil {
-		return fmt.Errorf("error occured while seeking:\n\t%w", err)
+		return fmt.Errorf("error occurred while seeking:\n\t%w", err)
 	}
 	sum, err := oggcrypto.CalculateSHA256sum(outFile)
 	if err != nil {
-		return fmt.Errorf("error occured while calculating checksum:\n\t%w", err)
+		return fmt.Errorf("error occurred while calculating checksum:\n\t%w", err)
 	}
 	if sum != *fileObj.Checksum {
 		return fmt.Errorf("file checksum doesn't match") //TODO add a cleanup function
@@ -66,12 +66,12 @@ func extractFile(tarReader *tar.Reader, header *tar.Header, previewMode bool, be
 		fileObj.IsPreview = true
 		res := db.DB.Save(belongsTo)
 		if res.Error != nil {
-			return fmt.Errorf("error occured while updating the owner file instance:\n\t%w", res.Error)
+			return fmt.Errorf("error occurred while updating the owner file instance:\n\t%w", res.Error)
 		}
 
 	}
 	if res := db.DB.Save(&fileObj); res.Error != nil {
-		return fmt.Errorf("error occured while saving to db:\n\t%w", res.Error)
+		return fmt.Errorf("error occurred while saving to db:\n\t%w", res.Error)
 	}
 	return nil
 }
@@ -89,7 +89,7 @@ func extractTarGz(r io.Reader, session *Session) error {
 
 	checksum, err := oggcrypto.CalculateSHA256sum(f)
 	if err != nil {
-		return fmt.Errorf("error occured while calculating sha256sum:\n\t%w", err)
+		return fmt.Errorf("error occurred while calculating sha256sum:\n\t%w", err)
 	}
 	if _, err = f.Seek(0, io.SeekStart); err != nil {
 		return fmt.Errorf("error while seeking to start:\n\t%w", err)
@@ -120,7 +120,7 @@ func extractTarGz(r io.Reader, session *Session) error {
 			log.Println("archive end reached")
 			break
 		} else if err != nil {
-			return fmt.Errorf("error occured while reading the next entry in tar reader:\n\t%v", err)
+			return fmt.Errorf("error occurred while reading the next entry in tar reader:\n\t%v", err)
 		}
 		cp := path.Clean(header.Name)
 		lx := strings.Split(cp, "/")
@@ -130,7 +130,7 @@ func extractTarGz(r io.Reader, session *Session) error {
 		if header.Typeflag == tar.TypeDir && (lx[len(lx)-1] == STORAGE_DIR_NAME || lx[len(lx)-1] == PREVIEW_DIR_NAME) {
 			currentWorkingPath = fmt.Sprintf("%s/%s", DirectorySession, cp)
 			if err = os.MkdirAll(currentWorkingPath, 0777); err != nil {
-				return fmt.Errorf("error occured creating path at %s :\n\t%w", currentWorkingPath, err)
+				return fmt.Errorf("error occurred creating path at %s :\n\t%w", currentWorkingPath, err)
 			}
 		}
 		if header.Typeflag == tar.TypeReg && (lx[len(lx)-1] != CHECKSUM_FILENAME) {
@@ -142,16 +142,16 @@ func extractTarGz(r io.Reader, session *Session) error {
 				var err error
 				owningFileRef, err = session.FindOwnedFileWithName(lx[len(lx)-1])
 				if err != nil {
-					return fmt.Errorf("error occured while finding owned file with name %s:\n\t%w", lx[len(lx)-1], err)
+					return fmt.Errorf("error occurred while finding owned file with name %s:\n\t%w", lx[len(lx)-1], err)
 				}
 				if owningFileRef == nil {
-					return fmt.Errorf("error occured while trying to find owner file")
+					return fmt.Errorf("error occurred while trying to find owner file")
 				}
 
 			}
 			err = extractFile(tarReader, header, previewLoadingMode, owningFileRef)
 			if err != nil {
-				return fmt.Errorf("error occured while extracting file:\n\t%w", err)
+				return fmt.Errorf("error occurred while extracting file:\n\t%w", err)
 			}
 		}
 	}
@@ -168,7 +168,7 @@ func setupTar(r io.Reader) (*os.File, error) {
 	defer os.Remove(f.Name())
 
 	if _, err = io.CopyBuffer(f, r, buffer); err != nil {
-		return nil, fmt.Errorf("error occured while copying file to new buffer:\n\t%w", err)
+		return nil, fmt.Errorf("error occurred while copying file to new buffer:\n\t%w", err)
 	}
 
 	if err = f.Sync(); err != nil {
@@ -179,7 +179,7 @@ func setupTar(r io.Reader) (*os.File, error) {
 
 	f, err = os.Open(f.Name())
 	if err != nil {
-		return nil, fmt.Errorf("error occured while opening file:\n\t%w", err)
+		return nil, fmt.Errorf("error occurred while opening file:\n\t%w", err)
 	}
 	return f, nil
 }

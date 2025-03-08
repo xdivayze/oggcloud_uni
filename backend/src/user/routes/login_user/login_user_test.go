@@ -10,7 +10,7 @@ import (
 	"oggcloudserver/src"
 	"oggcloudserver/src/user/auth"
 	"oggcloudserver/src/user/model"
-	loginuser "oggcloudserver/src/user/routes/login_user"
+	login_user "oggcloudserver/src/user/routes/login_user"
 	"oggcloudserver/src/user/testing_material"
 	"testing"
 
@@ -38,11 +38,11 @@ func TestLogin(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	r := src.SetupRouter()
 	
-	userjson, passwd := testing_material.GenerateUserJson(t)
+	userJson, passwd := testing_material.GenerateUserJson(t)
 	{
 		w := httptest.NewRecorder()
 		endpoint := "/api/user/register"
-		req, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(userjson))
+		req, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(userJson))
 		if err != nil {
 			t.Fatalf("error creating new request:\n\t%v\n", err)
 		}
@@ -53,12 +53,12 @@ func TestLogin(t *testing.T) {
 			t.Fatalf("expected 201, got %d\n\tjsonBody:%s", w.Code, w.Body.String())
 		}
 	}
-	var loginreturn map[string]interface{}
+	var loginReturn map[string]interface{}
 	{
 		w := httptest.NewRecorder()
-		loginjson := generateLoginJson(passwd, t)
+		loginJson := generateLoginJson(passwd, t)
 		endpoint := "/api/user/login"
-		req, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(loginjson))
+		req, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(loginJson))
 		if err != nil {
 			t.Fatalf("error creating new request:\n\t%v\n", err)
 		}
@@ -68,13 +68,13 @@ func TestLogin(t *testing.T) {
 			t.Fatalf("expected 200, got %d\n\tjsonBody:%s", w.Code, w.Body.String())
 		}
 
-		if err = json.Unmarshal(w.Body.Bytes(), &loginreturn); err != nil {
+		if err = json.Unmarshal(w.Body.Bytes(), &loginReturn); err != nil {
 			t.Fatalf("error unmarshalling json:\n\t%v\n", err)
 		}
 		t.Logf("success, body returned: \n\t%s", w.Body.String())
 
 	}
-	code, s := loginreturn["authCode"].(string)
+	code, s := loginReturn["authCode"].(string)
 	if !s {
 		t.Fatalf("field authCode doesn't exist on returned json")
 	}
@@ -82,17 +82,17 @@ func TestLogin(t *testing.T) {
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		t.Fatalf("auth instance not found:\n\t%s\n", code)
 	} else if err != nil {
-		t.Fatalf("error occured while retrieving instance:\n\t%v\n", err)
+		t.Fatalf("error occurred while retrieving instance:\n\t%v\n", err)
 	}
 	ownerID := foundAuth.UserID
 	foundUser, err := model.GetUserFromID(ownerID)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		t.Fatalf("user instance not found:\n\t%s\n", code)
 	} else if err != nil {
-		t.Fatalf("error occured while retrieving instance:\n\t%v\n", err)
+		t.Fatalf("error occurred while retrieving instance:\n\t%v\n", err)
 	}
 
-	if err = loginuser.CheckPasswordHash(passwd, foundUser); err != nil {
+	if err = login_user.CheckPasswordHash(passwd, foundUser); err != nil {
 		log.Fatalf("passwords don't match: \n\t%v\n", err)
 	}
 }

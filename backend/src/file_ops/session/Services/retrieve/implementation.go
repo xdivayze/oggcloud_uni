@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"net/http"
 	"oggcloudserver/src/db"
+	fileops "oggcloudserver/src/file_ops"
 	"oggcloudserver/src/file_ops/file"
+	"oggcloudserver/src/user/constants"
 	"oggcloudserver/src/user/model"
 	"strconv"
 
@@ -20,7 +22,7 @@ func getFileWithOffset(c *gin.Context) (*file.File, error) {
 
 	if err := initializeVariables(c, &foundUser, &offset, &wantPreview); err != nil {
 
-		return nil, fmt.Errorf("error occured while initializing variables:\n\t%w", err)
+		return nil, fmt.Errorf("error occurred while initializing variables:\n\t%w", err)
 	}
 
 	foundFile := file.File{}
@@ -33,22 +35,21 @@ func getFileWithOffset(c *gin.Context) (*file.File, error) {
 
 }
 
-const OFFSET_FIELD = "offset"
-const PREVIEW_WISH_FIELD = "wantPreview"
+
 
 func initializeVariables(c *gin.Context, foundUser *model.User, offset *int, previewMode *bool) error {
-	mail := c.Request.Header.Get(model.EMAIL_FIELDNAME)
+	mail := c.Request.Header.Get(constants.EMAIL_FIELDNAME)
 	foundUserProto, err := model.GetUserFromMail(mail)
 	*foundUser = *foundUserProto
 	if err == gorm.ErrRecordNotFound {
 		c.JSON(http.StatusNotFound, gin.H{"error": "no user with given email found"})
 		return err
 	} else if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "error occured while associating user with mail"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "error occurred while associating user with mail"})
 		return err
 	}
 
-	offsetProto := c.Request.Header.Get(OFFSET_FIELD)
+	offsetProto := c.Request.Header.Get(fileops.OFFSET_JSON_FIELDNAME)
 	if offsetProto == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "offset field not found in headers"})
 	}
@@ -58,7 +59,7 @@ func initializeVariables(c *gin.Context, foundUser *model.User, offset *int, pre
 		return err
 	}
 
-	previewModeProto := c.Request.Header.Get(PREVIEW_WISH_FIELD)
+	previewModeProto := c.Request.Header.Get(fileops.PREVIEW_WISH_JSON_FIELDNAME)
 	if previewModeProto == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "wantPreview field not found in headers"})
 	}

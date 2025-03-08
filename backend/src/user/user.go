@@ -14,6 +14,8 @@ import (
 //TODO collect all constants in a single file
 
 var AdminID = "5fa510a6-dc4c-4a91-b726-08bc982104d7"
+
+
 var AdminReferral string
 
 func CreateAdminUser() error {

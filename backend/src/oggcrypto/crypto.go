@@ -28,12 +28,12 @@ func init() {
 	}
 }
 
-func DecryptAES(ciphertext []byte, key []byte) ([]byte, error) {
-	if len(ciphertext) < 12 {
-		return nil, fmt.Errorf("ciphertext too short to contain a nonce")
+func DecryptAES(cipherText []byte, key []byte) ([]byte, error) {
+	if len(cipherText) < 12 {
+		return nil, fmt.Errorf("cipherText too short to contain a nonce")
 	}
-	nonce := ciphertext[:NONCE_LENGTH]
-	encData := ciphertext[NONCE_LENGTH:]
+	nonce := cipherText[:NONCE_LENGTH]
+	encData := cipherText[NONCE_LENGTH:]
 
 	block, err := aes.NewCipher(key)
 	if err != nil {
@@ -74,7 +74,7 @@ func EncryptAES(data []byte, key []byte) ([]byte, error) {
 
 	aesGCM, err := cipher.NewGCM(block)
 	if err != nil {
-		return nil, fmt.Errorf("couldnt generate gcm mode:\n\t%w", err)
+		return nil, fmt.Errorf("couldn't generate gcm mode:\n\t%w", err)
 	}
 
 	cipherText := aesGCM.Seal(nil, nonce, data, nil)

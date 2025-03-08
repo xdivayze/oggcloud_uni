@@ -17,7 +17,7 @@ func GetUserFromMail(mail string) (*User, error) {
 	if errors.Is(res.Error, gorm.ErrRecordNotFound) {
 		return nil, fmt.Errorf("record not found:\n\t%w", gorm.ErrRecordNotFound)
 	} else if res.Error != nil {
-		return nil, fmt.Errorf("error occured when querying the database:\n\t%w", res.Error)
+		return nil, fmt.Errorf("error occurred when querying the database:\n\t%w", res.Error)
 	}
 	return &user, nil
 }
@@ -28,7 +28,7 @@ func GetUserFromID(id uuid.UUID) (*User, error) {
 	if errors.Is(res.Error, gorm.ErrRecordNotFound) {
 		return nil, fmt.Errorf("record not found:\n\t%w", gorm.ErrRecordNotFound)
 	} else if res.Error != nil {
-		return nil, fmt.Errorf("error occured when querying the database:\n\t%w", res.Error)
+		return nil, fmt.Errorf("error occurred when querying the database:\n\t%w", res.Error)
 	}
 	return &user, nil
 }
@@ -37,7 +37,7 @@ func GenerateAndEncryptSharedKey(clientpub string) (string, string, error) {
 
 	pubkey, err := oggcrypto.ReadFromPEM(clientpub)
 	if err != nil {
-		return "", "", fmt.Errorf("error occured when reading from pem:\n\t%w", err)
+		return "", "", fmt.Errorf("error occurred when reading from pem:\n\t%w", err)
 	}
 
 	ss, sp, err := oggcrypto.GenerateECDHPair()
@@ -47,12 +47,12 @@ func GenerateAndEncryptSharedKey(clientpub string) (string, string, error) {
 
 	shared, salt, err := oggcrypto.DeriveSharedSecret(ss, pubkey, nil)
 	if err != nil {
-		return "", "", fmt.Errorf("error occured while deriving the shared secret:\n\t%w", err)
+		return "", "", fmt.Errorf("error occurred while deriving the shared secret:\n\t%w", err)
 	}
 	{
 		sp, err := oggcrypto.EncodePublicKeyToPEM(sp)
 		if err != nil {
-			return "", "", fmt.Errorf("error occured while encoding server public key to pem:\n\t%w", err)
+			return "", "", fmt.Errorf("error occurred while encoding server public key to pem:\n\t%w", err)
 		}
 		return hex.EncodeToString(salt) + hex.EncodeToString(shared), sp, nil
 	}

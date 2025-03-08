@@ -22,13 +22,13 @@ func GenerateECDHPair() (*ecdh.PrivateKey, *ecdh.PublicKey, error) {
 
 }
 
-func DeriveSharedSecret(privateKey *ecdh.PrivateKey, publicKey *ecdh.PublicKey, saltopt interface{}) ([]byte, []byte, error) {
+func DeriveSharedSecret(privateKey *ecdh.PrivateKey, publicKey *ecdh.PublicKey, saltOptional interface{}) ([]byte, []byte, error) {
 	shared, err := privateKey.ECDH(publicKey)
 	if err != nil {
 		return nil, nil, fmt.Errorf("error deriving shared secret:\n\t%w", err)
 	}
 	var salt []byte
-	if saltopt == nil {
+	if saltOptional == nil {
 		salt = make([]byte, SALT_LENGTH)
 		_, err = rand.Read(salt)
 		if err != nil {
@@ -36,7 +36,7 @@ func DeriveSharedSecret(privateKey *ecdh.PrivateKey, publicKey *ecdh.PublicKey, 
 		}
 	} else {
 		var ok bool
-		salt, ok = saltopt.([]byte)
+		salt, ok = saltOptional.([]byte)
 		if !ok {
 			return nil, nil, fmt.Errorf("given salt cannot be casted to type []byte")
 		}

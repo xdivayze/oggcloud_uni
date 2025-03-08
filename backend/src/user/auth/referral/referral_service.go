@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"oggcloudserver/src/db"
 	ref_model "oggcloudserver/src/user/auth/referral/model"
+	"oggcloudserver/src/user/constants"
 	"oggcloudserver/src/user/model"
 	"os"
 
@@ -18,7 +19,7 @@ import (
 
 //TODO write tests
 
-const REFERRAL_CODE_FIELDNAME = "referralCode"
+
 
 func CreateReferralModel() (*ref_model.Referral, error) {
 	code := make([]byte, 32)
@@ -35,7 +36,7 @@ func CreateReferralModel() (*ref_model.Referral, error) {
 }
 
 func CreateReferral(c *gin.Context) {
-	email := c.Request.Header.Get(model.EMAIL_FIELDNAME)
+	email := c.Request.Header.Get(constants.EMAIL_FIELDNAME)
 	foundUser, err := model.GetUserFromMail(email)
 	if err != nil {
 		c.Status(http.StatusInternalServerError)
@@ -59,16 +60,16 @@ func CreateReferral(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		REFERRAL_CODE_FIELDNAME: createdReferral.Code,
+		constants.REFERRAL_CODE_FIELDNAME: createdReferral.Code,
 	})
 
 }
 
 func VerifyReferral(c *gin.Context) {
-	supposedCode := c.Request.Header.Get(REFERRAL_CODE_FIELDNAME)
+	supposedCode := c.Request.Header.Get(constants.REFERRAL_CODE_FIELDNAME)
 	if supposedCode == "" {
 		c.Status(http.StatusBadRequest)
-		fmt.Fprintf(os.Stderr, "field with name %s not found in the request header\n", REFERRAL_CODE_FIELDNAME)
+		fmt.Fprintf(os.Stderr, "field with name %s not found in the request header\n", constants.REFERRAL_CODE_FIELDNAME)
 		return
 	}
 

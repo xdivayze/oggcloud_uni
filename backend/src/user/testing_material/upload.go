@@ -15,6 +15,7 @@ import (
 	"oggcloudserver/src/file_ops/file"
 	"oggcloudserver/src/file_ops/session/Services/upload"
 	"oggcloudserver/src/user/auth"
+	"oggcloudserver/src/user/constants"
 	"oggcloudserver/src/user/model"
 	"os"
 	"strings"
@@ -25,10 +26,10 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const TEST_TAR = "/home/cavej/repositories/oggcloud_dev/backend/Storage/testing/uploadtest/test.tar.gz"
+const TEST_TAR = "/home/cavej/repositories/oggcloud_dev/backend/Storage/testing/uploadtest/test.tar.gz" //TODO fix abs path
 
 var ModeFlush = true
-var Udir string
+var UDir string
 var Auth string
 
 func TestDBIntegrity(t *testing.T) {
@@ -39,10 +40,10 @@ func TestDBIntegrity(t *testing.T) {
 	defer func() {
 		if ModeFlush {
 			FlushDB()
-			os.RemoveAll(Udir)
+			os.RemoveAll(UDir)
 		}
 	}()
-	lx := strings.Split(Udir, "/")
+	lx := strings.Split(UDir, "/")
 	id := lx[len(lx)-1]
 	var u model.User
 	var l []upload.Session
@@ -54,7 +55,7 @@ func TestDBIntegrity(t *testing.T) {
 	err = db.DB.Model(&u).Association("Sessions").Find(&l)
 	require.Nil(err)
 
-	storageDir, err := os.ReadDir(fmt.Sprintf("%s/%s/%s", Udir, l[0].ID, "Storage"))
+	storageDir, err := os.ReadDir(fmt.Sprintf("%s/%s/%s", UDir, l[0].ID, "Storage"))
 	require.Nil(err)
 	for _, f := range storageDir {
 		var foundFile file.File
@@ -72,6 +73,9 @@ func TestDBIntegrity(t *testing.T) {
 	}
 }
 
+const TEST_TAR_FILENAME = "mytar.tar.gz"
+const TEST_TAR_CHECKSUM = "d7a51f12f8a85e315936d09acd74daed245551bcb77e450c88c8a05179ddf96b"
+
 func TestDataHandling(t *testing.T) {
 	LoadDotEnv(t)
 	LoadDB(t)
@@ -86,11 +90,11 @@ func TestDataHandling(t *testing.T) {
 	r := src.SetupRouter()
 
 	id, authcode := DoCreateUser(t, r)
-	Udir = fmt.Sprintf("%s/%s", upload.DIRECTORY_BASE, id.String())
+	UDir = fmt.Sprintf("%s/%s", upload.DIRECTORY_BASE, id.String())
 
 	defer func() {
 		if ModeFlush {
-			os.RemoveAll(Udir)
+			os.RemoveAll(UDir)
 		}
 	}()
 
@@ -104,7 +108,7 @@ func TestDataHandling(t *testing.T) {
 	var requestBody bytes.Buffer
 	writer := multipart.NewWriter(&requestBody)
 
-	filepart, err := writer.CreateFormFile("file", "mytar.tar.gz")
+	filepart, err := writer.CreateFormFile("file", TEST_TAR_FILENAME)
 	if err != nil {
 		t.Fatalf("error creating form file:\n\t%v\n", err)
 	}
@@ -113,13 +117,13 @@ func TestDataHandling(t *testing.T) {
 	}
 
 	if err = writer.WriteField("id", id.String()); err != nil {
-		t.Fatalf("error occured while writing field")
+		t.Fatalf("error occurred while writing field")
 	}
 	if err = writer.WriteField("file_count", "2"); err != nil {
-		t.Fatalf("error occured while writing field")
+		t.Fatalf("error occurred while writing field")
 	}
-	if err = writer.WriteField("checksum", "d7a51f12f8a85e315936d09acd74daed245551bcb77e450c88c8a05179ddf96b"); err != nil {
-		t.Fatalf("error occured while writing field")
+	if err = writer.WriteField("checksum", TEST_TAR_CHECKSUM); err != nil {
+		t.Fatalf("error occurred while writing field")
 	}
 
 	ra := make([]byte, 64)
@@ -128,7 +132,7 @@ func TestDataHandling(t *testing.T) {
 	}
 
 	if err = writer.WriteField("session_key", hex.EncodeToString(ra)); err != nil {
-		t.Fatalf("error occured while writing field")
+		t.Fatalf("error occurred while writing field")
 	}
 	writer.Close()
 
@@ -137,7 +141,7 @@ func TestDataHandling(t *testing.T) {
 		t.Fatalf("error generating new request:\n\t%v\n", err)
 	}
 
-	req.Header.Set(model.EMAIL_FIELDNAME, EXAMPLE_MAIL)
+	req.Header.Set(constants.EMAIL_FIELDNAME, EXAMPLE_MAIL)
 	req.Header.Set(auth.AUTH_CODE_FIELDNAME, authcode)
 
 	req.Header.Set("Content-Type", writer.FormDataContentType())
@@ -150,23 +154,23 @@ func TestDataHandling(t *testing.T) {
 
 	var unmarshaled map[string]interface{}
 	if err = json.Unmarshal(w.Body.Bytes(), &unmarshaled); err != nil {
-		t.Fatalf("error occured while unmarshalling:\n\t%v\n", err)
+		t.Fatalf("error occurred while unmarshalling:\n\t%v\n", err)
 	}
 	sid, err := uuid.Parse(unmarshaled["sessionID"].(string))
 	if err != nil {
-		t.Fatalf("error occured while parsing to uuid:\n\t%v\n", err)
+		t.Fatalf("error occurred while parsing to uuid:\n\t%v\n", err)
 	}
 
-	require.DirExists(t, fmt.Sprintf("%s/%s/Storage", Udir, sid))
-	require.DirExists(t, fmt.Sprintf("%s/%s/Preview", Udir, sid))
+	require.DirExists(t, fmt.Sprintf("%s/%s/Storage", UDir, sid))
+	require.DirExists(t, fmt.Sprintf("%s/%s/Preview", UDir, sid))
 
 }
 
 func DoCreateUser(t *testing.T, r *gin.Engine) (uuid.UUID, string) {
-	userjson, password := GenerateUserJson(t)
+	userJSON, password := GenerateUserJson(t)
 	w := httptest.NewRecorder()
 	endpoint := "/api/user/register"
-	req, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(userjson))
+	req, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(userJSON))
 	if err != nil {
 		t.Fatalf("error creating new request:\n\t%v\n", err)
 	}
@@ -177,21 +181,21 @@ func DoCreateUser(t *testing.T, r *gin.Engine) (uuid.UUID, string) {
 		t.Fatalf("expected 201, got %d\n\tjsonBody:%s", w.Code, w.Body.String())
 	}
 
-	var jsonobj map[string]interface{}
-	if err = json.Unmarshal(w.Body.Bytes(), &jsonobj); err != nil {
-		t.Fatalf("error occured while unmarshalling:\n\t%v\n", err)
+	var jsonObj map[string]interface{}
+	if err = json.Unmarshal(w.Body.Bytes(), &jsonObj); err != nil {
+		t.Fatalf("error occurred while unmarshalling:\n\t%v\n", err)
 	}
-	id, err := uuid.Parse(jsonobj["id"].(string))
+	id, err := uuid.Parse(jsonObj["id"].(string))
 	if err != nil {
-		t.Fatalf("error occured while parsing to uuid:\n\t%v\n", err)
+		t.Fatalf("error occurred while parsing to uuid:\n\t%v\n", err)
 	}
 	return id, DoLogin(t, password, r)
 }
 
 func DoLogin(t *testing.T, password string, r *gin.Engine) string {
 	jsonMap := map[string]interface{}{
-		model.EMAIL_FIELDNAME:    EXAMPLE_MAIL,
-		model.PASSWORD_FIELDNAME: password,
+		constants.EMAIL_FIELDNAME:    EXAMPLE_MAIL,
+		constants.PASSWORD_FIELDNAME: password,
 	}
 
 	jsonBytes, err := json.Marshal(jsonMap)
@@ -212,9 +216,9 @@ func DoLogin(t *testing.T, password string, r *gin.Engine) string {
 	require.Nil(t, err)
 
 	auth, exists := responseBody[auth.AUTH_CODE_FIELDNAME]
-	authl := auth.(string)
+	authParsed := auth.(string)
 	require.True(t, exists)
-	Auth = authl
-	return authl
+	Auth = authParsed
+	return authParsed
 
 }
