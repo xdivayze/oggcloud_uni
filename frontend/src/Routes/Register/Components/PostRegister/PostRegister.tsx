@@ -1,9 +1,11 @@
-import Err from "./Err"
+import ErrorPage from "../../../ErrorPage/ErrorPage"
 import UserCreated from "./UserCreated"
 
-export default function PostRegister({success}:{success:boolean}) {
+
+export default function PostRegister({code, success}:{code:number, success: boolean}) {
     if (!success) {
-        return <Err />
+        
+        return <ErrorPage code={code} />
     }
     return <UserCreated />
 }

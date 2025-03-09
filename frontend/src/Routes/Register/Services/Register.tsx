@@ -30,7 +30,7 @@ export async function DoRegister(
     body: JSON.stringify(jsonBody),
   });
 
-  setRender(<PostRegister success={req.status === 201 ? true : false} />);
+  setRender(<PostRegister success={req.status === 201 ? true : false} code={req.status} />);
 
   return;
 }

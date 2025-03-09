@@ -4,6 +4,7 @@ import Layout from "./Layout";
 import Register from "./Routes/Register/Components/Register";
 import RegisterRefer from "./Routes/Register/Components/RegisterRefer";
 import AuthProvider from "./Protected/AuthProvider";
+import ErrorPage from "./Routes/ErrorPage/ErrorPage";
 
 function App() {
   return (
@@ -18,8 +19,9 @@ function App() {
             }
           />
           <Route path="/register/:id" element={<Register />} />
-
+          <Route path="*" element={<ErrorPage />} />
         </Route>
+        
       </Routes>
     </AuthProvider>
   );
