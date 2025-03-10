@@ -16,7 +16,7 @@ export default function UserCreated({
       <div className="w-full pt-28 ">
         <div className="w-full px-50 flex justify-center ">
           <ObeseBar
-            color="bg-indigo-800 text-white hover:text-white hover:bg-red-600 items-center justify-center text-3xl"
+            color="bg-gray-800 text-white hover:text-white  items-center justify-center text-3xl"
             text={securityText}
             refPassed={seedRef}
             height="min-h-[370px]"

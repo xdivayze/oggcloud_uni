@@ -9,7 +9,7 @@ import { Buffer } from "buffer/";
 import { ERR_MODE_STYLES, StatusCodes } from "./utils";
 
 const ECDH_PRIVATE_STORAGE_FIELD = "ecdhPrivate";
-const AES_PRIVATE_STORAGE_FIELD = "masterKey";
+const AES_MASTERKEY_STORAGE_FIELD = "masterKey";
 
 export default async function GenerateKeys(
   securityTextCompStruct: ComponentDispatchStruct
@@ -66,7 +66,7 @@ export default async function GenerateKeys(
   );
 
   window.localStorage.setItem(
-    AES_PRIVATE_STORAGE_FIELD,
+    AES_MASTERKEY_STORAGE_FIELD,
     Buffer.from(derivedKey).toString("hex")
   );
   window.localStorage.setItem(

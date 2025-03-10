@@ -10,10 +10,12 @@ export default function PostRegister({
   success: boolean;
   secText?: string;
 }) {
+  
   if (!success) {
     return <ErrorPage code={code} />;
   } else if (secText !== undefined) {
     return <UserCreated securityText={secText} />;
-  } 
-  return <ErrorPage code={505}/>
+  } else {
+    return <ErrorPage code={500} />;
+  }
 }

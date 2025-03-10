@@ -6,6 +6,7 @@ export interface IDoRegister {
   password: string; //hash before request
   referralCode: string; //use to update used status of referral code
   ecdhPublic: string;
+  secText : string;
 }
 
 

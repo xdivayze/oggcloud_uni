@@ -80,6 +80,7 @@ export default function RegisterSuccess() {
       email: "",
       referralCode: refCode,
       ecdhPublic: "",
+      secText: ""
     };
 
     const passwordHash = DoPasswordOperations(
@@ -97,7 +98,8 @@ export default function RegisterSuccess() {
       .then(({ code, ecdhPub }) => {
         code === StatusCodes.Success
           ? (() => {
-              registerInterface.ecdhPublic = ecdhPub as string;
+            registerInterface.secText = securityTextRef.current?.innerText as string;
+              registerInterface.ecdhPublic = ecdhPub as string; 
               DoRegister(registerInterface, setRender);
             })()
           : void 0; //encryption stuff ends here

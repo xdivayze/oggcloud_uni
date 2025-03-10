@@ -1,5 +1,7 @@
 import React from "react";
 
+//TODO add a feature so that when user clicks on the div the innerText is deleted
+
 export default function ObeseBar({
   height,
   color,
