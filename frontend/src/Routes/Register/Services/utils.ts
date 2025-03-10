@@ -1,7 +1,7 @@
 export const ERR_MODE_STYLES =
   "bg-red-700 hover:text-white hover:bg-indigo-950 text-2xl text-white";
 
-export interface IDoRegister {
+export interface IDoRegister { //TODO change this with a class with methods to create states internally to get rid of redundant code
   email: string;
   password: string; //hash before request
   referralCode: string; //use to update used status of referral code
