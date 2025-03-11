@@ -10,6 +10,10 @@ export interface IDoRegister { //TODO change this with a class with methods to c
 }
 
 
+export const ObeseBarDefaultStyles = "text-white bg-teal-ogg-1 hover:text-white hover:bg-indigo-950 text-2xl"
+
+
+
 export enum StatusCodes {
   Success = "",
   ErrWhiteSpace = "Password includes whitespace",

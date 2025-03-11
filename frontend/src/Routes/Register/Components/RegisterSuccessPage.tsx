@@ -1,87 +1,55 @@
 import { JSX, useCallback, useEffect, useRef, useState } from "react";
 import ObeseBar from "./ObeseBar";
 import Navbar from "../../../Navbar/Navbar";
-import { ComponentDispatchStruct, DoRegister } from "../Services/Register";
+import { DoRegister } from "../Services/Register";
 import { useParams } from "react-router-dom";
 import { DoPasswordOperations } from "../Services/PasswordServices";
 import { DoCheckMailValidity } from "../Services/MailServices";
 import GenerateKeys from "../Services/KeyGenerationService";
-import { IDoRegister, StatusCodes } from "../Services/utils";
+import {
+  IDoRegister,
+  ObeseBarDefaultStyles,
+  StatusCodes,
+} from "../Services/utils";
+import ComponentDispatchStruct from "./ComponentDispatchStruct";
+import PostRegister from "./PostRegister/PostRegister";
 
 export default function RegisterSuccess() {
-  const emailRef = useRef<HTMLDivElement>(null);
-  const passwordRef = useRef<HTMLDivElement>(null);
-  const passwordRepeatRef = useRef<HTMLDivElement>(null);
-  const securityTextRef = useRef<HTMLDivElement>(null);
-  const submitRef = useRef<HTMLDivElement>(null);
+  const submitRef = useRef<HTMLDivElement | null>(null);
 
-  const [passwordText, setPasswordText] = useState(
+  const passwordCompStruct = new ComponentDispatchStruct(
+    ObeseBarDefaultStyles,
     "Enter a password not over 9 characters"
   );
-  const [passwordStyles, setPasswordStyles] = useState(
-    "text-white bg-teal-ogg-1 hover:text-white hover:bg-indigo-950 text-2xl"
-  );
-
-  const passwordCompStruct: ComponentDispatchStruct = {
-    setStyle: setPasswordStyles,
-    setText: setPasswordText,
-    compRef: passwordRef,
-    originalStyle: useRef(passwordStyles).current,
-  };
-
-  const [mailText, setMailText] = useState(
+  const mailCompStruct = new ComponentDispatchStruct(
+    ObeseBarDefaultStyles,
     "Enter your email(e.g. example@example.org)"
   );
-  const [mailStyles, setMailStyles] = useState(
-    "text-white bg-teal-ogg-1 hover:text-white hover:bg-indigo-950 text-2xl"
+  const passwordRepeatCompStruct = new ComponentDispatchStruct(
+    ObeseBarDefaultStyles,
+    "Repeat password"
   );
-
-  const mailCompStruct: ComponentDispatchStruct = {
-    setStyle: setMailStyles,
-    setText: setMailText,
-    compRef: emailRef,
-    originalStyle: useRef(mailStyles).current,
-  };
-
-  const [passwordRepeatText, setPasswordRepeatText] =
-    useState("Repeat password");
-  const [passwordRepeatStyles, setPasswordRepeatStyles] = useState(
-    "text-white bg-teal-ogg-1 hover:text-white hover:bg-indigo-950 text-2xl"
-  );
-
-  const passwordRepeatCompStruct: ComponentDispatchStruct = {
-    setStyle: setPasswordRepeatStyles,
-    setText: setPasswordRepeatText,
-    compRef: passwordRepeatRef,
-    originalStyle: useRef(passwordRepeatStyles).current,
-  };
-
-  const [securityTextText, setSecurityTextText] = useState(
+  const securityTextCompStruct = new ComponentDispatchStruct(
+    ObeseBarDefaultStyles,
     "Enter arbitrary text not surpassing 32 characters, do save it somewhere secure and not lose it"
   );
-  const [securityTextStyles, setSecurityTextStyles] = useState(
-    "text-white bg-teal-ogg-1 hover:text-white hover:bg-indigo-950  text-2xl"
-  );
-
-  const securityTextCompStruct: ComponentDispatchStruct = {
-    setStyle: setSecurityTextStyles,
-    setText: setSecurityTextText,
-    compRef: securityTextRef,
-    originalStyle: useRef(securityTextStyles).current,
-  };
 
   const params = useParams();
   const refCode = params.id as string;
   const [render, setRender] = useState<JSX.Element>(<></>);
 
+  const [submitted, setSubmitted] = useState(false);
+  const [responseStatus, setResponseStatus] = useState(0);
+  
   const onSubmitClick = useCallback(() => {
     const registerInterface: IDoRegister = {
       password: "",
       email: "",
       referralCode: refCode,
       ecdhPublic: "",
-      secText: ""
+      secText: "",
     };
+    
 
     const passwordHash = DoPasswordOperations(
       passwordCompStruct,
@@ -91,16 +59,22 @@ export default function RegisterSuccess() {
     passwordHash !== "" ? (registerInterface.password = passwordHash) : void 0; //password stuff ends here
 
     DoCheckMailValidity(mailCompStruct)
-      ? (registerInterface.email = emailRef.current?.innerText as string)
+      ? (registerInterface.email = mailCompStruct.getRefContent().innerHTML)
       : void 0; //mail stuff ends here
 
     GenerateKeys(securityTextCompStruct)
       .then(({ code, ecdhPub }) => {
         code === StatusCodes.Success
           ? (() => {
-            registerInterface.secText = securityTextRef.current?.innerText as string;
-              registerInterface.ecdhPublic = ecdhPub as string; 
-              DoRegister(registerInterface, setRender);
+              registerInterface.secText =
+                securityTextCompStruct.getRefContent().innerText;
+              registerInterface.ecdhPublic = ecdhPub as string;
+              DoRegister(registerInterface)
+                .then((v) => {
+                  setResponseStatus(v as unknown as number);
+                })
+                .catch((e) => console.error(e));
+              setSubmitted(true);
             })()
           : void 0; //encryption stuff ends here
       })
@@ -108,8 +82,6 @@ export default function RegisterSuccess() {
         console.error(e);
       });
   }, []);
-
-  //set the default render and update once register request is sent
   const defaultRender = //this is probably not a good idea...
     (
       <div className="min-h-full ml-7 mr-7">
@@ -128,10 +100,10 @@ export default function RegisterSuccess() {
               <div className="w-1/2">
                 <div className="w-full">
                   <ObeseBar
-                    refPassed={emailRef}
+                    refPassed={mailCompStruct.getRef()}
                     height="min-h-[110px]"
-                    color={mailStyles}
-                    text={mailText}
+                    color={mailCompStruct.styles}
+                    text={mailCompStruct.text}
                     contentEditable={true}
                   />
                 </div>
@@ -139,11 +111,11 @@ export default function RegisterSuccess() {
               <div className="w-1/2">
                 <div className="w-full">
                   <ObeseBar
-                    refPassed={passwordRef}
+                    refPassed={mailCompStruct.getRef()}
                     height="min-h-[110px]"
-                    color={passwordStyles}
+                    color={mailCompStruct.styles}
                     contentEditable={true}
-                    text={passwordText}
+                    text={mailCompStruct.text}
                   />
                 </div>
               </div>
@@ -152,10 +124,10 @@ export default function RegisterSuccess() {
               <div className="w-1/2">
                 <div className="w-full mt-6">
                   <ObeseBar
-                    refPassed={securityTextRef}
+                    refPassed={securityTextCompStruct.getRef()}
                     height="min-h-[370px]"
-                    color={securityTextStyles}
-                    text={securityTextText}
+                    color={securityTextCompStruct.styles}
+                    text={securityTextCompStruct.text}
                     contentEditable={true}
                   />
                 </div>
@@ -163,10 +135,10 @@ export default function RegisterSuccess() {
               <div className="w-1/2 mt-6 flex flex-col">
                 <div>
                   <ObeseBar
-                    refPassed={passwordRepeatRef}
+                    refPassed={passwordRepeatCompStruct.getRef()}
                     height="min-h-[110px]"
-                    color={passwordRepeatStyles}
-                    text={passwordRepeatText}
+                    color={passwordRepeatCompStruct.styles}
+                    text={passwordRepeatCompStruct.text}
                     contentEditable={true}
                   />
                 </div>
@@ -186,9 +158,16 @@ export default function RegisterSuccess() {
         </div>
       </div>
     );
+
   useEffect(() => {
     setRender(defaultRender);
   }, []);
-
-  return render;
+  return !submitted ? (
+    render
+  ) : (
+    <PostRegister
+      success={responseStatus === 201 ? true : false}
+      code={responseStatus}
+    />
+  );
 }

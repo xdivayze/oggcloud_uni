@@ -1,35 +1,55 @@
-import { useRef, useState } from "react";
+import { useEffect,  } from "react";
 import Navbar from "../../Navbar/Navbar";
 import ObeseBar from "../Register/Components/ObeseBar";
-import { ComponentDispatchStruct } from "../Register/Services/Register";
+
+import ComponentDispatchStruct from "../Register/Components/ComponentDispatchStruct";
 
 export default function Login() {
-  const [emailText, setEmailText] = useState(
+  useEffect(() => {}, []); //TODO check for saved sign-in
+
+  const defaultStyles =
+    "text-white bg-teal-ogg-1 hover:text-white hover:bg-indigo-950 text-2xl";
+
+  const emailCompStruct = new ComponentDispatchStruct(
+    defaultStyles,
     "Enter your email(e.g. example@example.org)"
   );
-  const [emailStyles, setEmailStyles] = useState(
-    "text-white bg-teal-ogg-1 hover:text-white hover:bg-indigo-950 text-2xl"
-  );
-  const emailRef = useRef<HTMLDivElement>(null);
 
-  const emailCompStruct: ComponentDispatchStruct = {
-    setStyle: setEmailStyles,
-    setText: setEmailText,
-    compRef: emailRef,
-    originalStyle: useRef(emailStyles).current,
-  };
+  // const [emailText, setEmailText] = useState(
+  //   "Enter your email(e.g. example@example.org)"
+  // );
+  // const [emailStyles, setEmailStyles] = useState(
+  //   "text-white bg-teal-ogg-1 hover:text-white hover:bg-indigo-950 text-2xl"
+  // );
+  // const emailRef = useRef<HTMLDivElement>(null);
 
-  const [passwordText, setPasswordText] = useState("Enter your password");
-  const [passwordStyles, setPasswordStyles] = useState(
-    "text-white bg-teal-ogg-1 hover:text-white hover:bg-indigo-950 text-2xl"
+  // const emailCompStruct: ComponentDispatchStruct = {
+  //   setStyle: setEmailStyles,
+  //   setText: setEmailText,
+  //   compRef: emailRef,
+  //   originalStyle: useRef(emailStyles).current,
+  // };
+
+  const passwordCompStruct = new ComponentDispatchStruct(
+    defaultStyles,
+    "Enter your password"
   );
-  const passwordRef = useRef<HTMLDivElement>(null);
-  const passwordCompStruct: ComponentDispatchStruct = {
-    setStyle: setPasswordStyles,
-    setText: setPasswordText,
-    compRef: passwordRef,
-    originalStyle: useRef(passwordStyles).current,
-  };
+
+  // const [passwordText, setPasswordText] = useState("Enter your password");
+  // const [passwordStyles, setPasswordStyles] = useState(
+  //   "text-white bg-teal-ogg-1 hover:text-white hover:bg-indigo-950 text-2xl"
+  // );
+  // const passwordRef = useRef<HTMLDivElement>(null);
+  // const passwordCompStruct: ComponentDispatchStruct = {
+  //   setStyle: setPasswordStyles,
+  //   setText: setPasswordText,
+  //   compRef: passwordRef,
+  //   originalStyle: useRef(passwordStyles).current,
+  // };
+
+  // const secTextCompStruct: ComponentDispatchStruct = {
+
+  // }
 
   return (
     <div className="w-full mx-7">
@@ -47,20 +67,24 @@ export default function Login() {
             <div className="w-1/2">
               <ObeseBar
                 height="min-h-[110px]"
-                color={emailStyles}
-                refPassed={emailRef}
-                text={emailText}
+                color={emailCompStruct.styles}
+                refPassed={emailCompStruct.getRef()}
+                text={emailCompStruct.text}
                 contentEditable
               />
             </div>
             <div className="w-1/2">
               <ObeseBar
-                text={passwordText}
-                color={passwordStyles}
-                refPassed={passwordRef}
+                text={passwordCompStruct.text}
+                color={passwordCompStruct.styles}
+                refPassed={passwordCompStruct.getRef()}
                 height="min-h-[110px]"
                 contentEditable
               />
+            </div>
+          </div>
+          <div className="px-40 flex flex-row w-full space-x-[300px]">
+            <div className="w-1/2 mt-6">
             </div>
           </div>
         </div>

@@ -1,15 +1,15 @@
 import { hkdf } from "@noble/hashes/hkdf";
-import {
-  ComponentDispatchStruct,
-} from "./Register";
+
 import { createHash } from "crypto";
 import { sha256 } from "@noble/hashes/sha256";
 
 import { Buffer } from "buffer/";
 import { ERR_MODE_STYLES, StatusCodes } from "./utils";
+import ComponentDispatchStruct from "../Components/ComponentDispatchStruct";
 
-const ECDH_PRIVATE_STORAGE_FIELD = "ecdhPrivate";
-const AES_MASTERKEY_STORAGE_FIELD = "masterKey";
+export const ECDH_PRIVATE_STORAGE_FIELD = "ecdhPrivate";
+export const AES_MASTERKEY_STORAGE_FIELD = "masterKey";
+export const SEED_FIELD = "seed";
 
 export default async function GenerateKeys(
   securityTextCompStruct: ComponentDispatchStruct
@@ -18,24 +18,20 @@ export default async function GenerateKeys(
   masterKey?: Buffer | null;
   ecdhPub?: string | null;
 }> {
-  const {
-    compRef: securityTextE,
-    setStyle: setSecurityTextStyles,
-    setText: setSecurityTextText,
-    originalStyle,
-  } = securityTextCompStruct;
-  setSecurityTextStyles(originalStyle);
+  const securityTextE = securityTextCompStruct.getRef();
+
+  securityTextCompStruct.setStyles(securityTextCompStruct.originalStyles);
 
   if (securityTextE.current === null) {
-    setSecurityTextText(StatusCodes.ErrNull);
-    setSecurityTextStyles(ERR_MODE_STYLES);
+    securityTextCompStruct.setText(StatusCodes.ErrNull);
+    securityTextCompStruct.setStyles(ERR_MODE_STYLES);
     return { code: StatusCodes.ErrNull };
   }
 
   const securityText = securityTextE.current.innerText;
   if (securityText.trim().length < 16) {
-    setSecurityTextText(StatusCodes.ErrNull);
-    setSecurityTextStyles(ERR_MODE_STYLES);
+    securityTextCompStruct.setText(StatusCodes.ErrNull);
+    securityTextCompStruct.setStyles(ERR_MODE_STYLES);
     return { code: StatusCodes.ErrSecurityTextTooShort };
   }
   const securityHash = createHash("sha256")
@@ -72,6 +68,10 @@ export default async function GenerateKeys(
   window.localStorage.setItem(
     ECDH_PRIVATE_STORAGE_FIELD,
     Buffer.from(exportedECDHPrivate).toString("hex")
+  );
+  window.localStorage.setItem(
+    SEED_FIELD,
+    securityTextCompStruct.getRefContent().innerText
   );
 
   return {

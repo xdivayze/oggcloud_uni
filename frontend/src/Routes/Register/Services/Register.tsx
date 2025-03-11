@@ -1,6 +1,5 @@
 import { Dispatch, JSX, RefObject, SetStateAction } from "react";
 import { IDoRegister } from "./utils";
-import PostRegister from "../Components/PostRegister/PostRegister";
 import { Buffer } from "buffer/";
 export interface ComponentDispatchStruct {
   setStyle: Dispatch<SetStateAction<string>>;
@@ -11,7 +10,6 @@ export interface ComponentDispatchStruct {
 
 export async function DoRegister(
   iDoRegister: IDoRegister,
-  setRender: Dispatch<SetStateAction<JSX.Element>>
 ) {
   const registerEndpoint = "/api/user/register";
 
@@ -29,14 +27,7 @@ export async function DoRegister(
     },
     body: JSON.stringify(jsonBody),
   });
-
-  setRender(
-    <PostRegister
-      success={req.status === 201 ? true : false}
-      secText={iDoRegister.secText}
-      code={req.status}
-    />
-  );
-
-  return;
+  return req.status
+ 
+    
 }

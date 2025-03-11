@@ -93,7 +93,7 @@ func VerifyReferralImplementation(supposedCode string) (int, bool, error)  {
 		return http.StatusBadRequest, false, fmt.Errorf("field with name %s not found in the request header", constants.REFERRAL_CODE_FIELDNAME)
 	}
 	var foundRef ref_model.Referral
-	if err := db.DB.Where("code = ?", supposedCode).First(&foundRef).Error; err != nil {
+	if err := db.DB.Where("code = ?", supposedCode).Where("used = ?", false).First(&foundRef).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return http.StatusForbidden, false, fmt.Errorf("referral code not found:\n\t%v", err)
 		}

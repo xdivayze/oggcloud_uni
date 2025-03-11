@@ -1,8 +1,9 @@
 import { createHash } from "crypto";
 import {
-  ComponentDispatchStruct,
+
 } from "./Register";
 import { ERR_MODE_STYLES, StatusCodes } from "./utils";
+import ComponentDispatchStruct from "../Components/ComponentDispatchStruct";
 
 const PASSWORD_FIELDNAME = "passwordHash";
 
@@ -10,30 +11,21 @@ export function DoPasswordOperations(
   passwordCompStruct: ComponentDispatchStruct,
   passwordRepeatCompStruct: ComponentDispatchStruct
 ): string {
-  const {
-    compRef: passwd,
-    setStyle: setPasswordStyles,
-    setText: setPasswordText,
-    originalStyle: ogPasswdStyle,
-  } = passwordCompStruct;
-  const {
-    compRef: passwdRepeat,
-    setStyle: setPasswordRepeatStyles,
-    setText: setPasswordRepeatText,
-    originalStyle: originalPasswordRepeatStyle,
-  } = passwordRepeatCompStruct;
 
-  setPasswordRepeatStyles(originalPasswordRepeatStyle);
-  setPasswordStyles(ogPasswdStyle);
+  const passwd = passwordCompStruct.getRef()
+  const passwdRepeat = passwordCompStruct.getRef()
+
+  passwordRepeatCompStruct.setStyles(passwordRepeatCompStruct.originalStyles);
+  passwordCompStruct.setStyles(passwordCompStruct.originalStyles);
 
   if (passwd.current === null) {
-    setPasswordText(StatusCodes.ErrNull);
-    setPasswordStyles(ERR_MODE_STYLES);
+    passwordRepeatCompStruct.setText(StatusCodes.ErrNull);
+    passwordCompStruct.setStyles(ERR_MODE_STYLES);
     return "";
   }
   if (passwdRepeat.current === null) {
-    setPasswordRepeatStyles(ERR_MODE_STYLES);
-    setPasswordRepeatText(StatusCodes.ErrNull);
+    passwordRepeatCompStruct.setStyles(ERR_MODE_STYLES);
+    passwordRepeatCompStruct.setText(StatusCodes.ErrNull);
     return "";
   }
   const passwordContent = passwd.current.innerText;
@@ -44,12 +36,12 @@ export function DoPasswordOperations(
     passwordRepeatContent
   );
   if (code !== StatusCodes.Success) {
-    setPasswordText(code);
-    setPasswordStyles(ERR_MODE_STYLES);
+    passwordRepeatCompStruct.setText(code);
+    passwordCompStruct.setStyles(ERR_MODE_STYLES);
     if (code === StatusCodes.ErrDontMatch) {
-      setPasswordRepeatStyles(ERR_MODE_STYLES);
+      passwordRepeatCompStruct.setStyles(ERR_MODE_STYLES);
 
-      setPasswordRepeatText(code);
+      passwordRepeatCompStruct.setText(code);
     }
     return "";
   }
