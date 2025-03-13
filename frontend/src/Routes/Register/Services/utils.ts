@@ -19,7 +19,7 @@ export const ECDH_PUB_FIELDNAME = "ecdhPublic"
 
 export enum StatusCodes {
   Success = "",
-  ErrWhiteSpace = "Password includes whitespace",
+  ErrWhiteSpace = "Can't include whitespace",
   ErrPasswordTooLong = "Password exceeds the 9 character password limit",
   ErrDontMatch = "Passwords don't match" ,
   ErrCryptographicFault = "Error occurred while processing your password",

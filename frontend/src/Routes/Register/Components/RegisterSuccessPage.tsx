@@ -17,20 +17,20 @@ import PostRegister from "./PostRegister/PostRegister";
 export default function RegisterSuccess() {
   const submitRef = useRef<HTMLDivElement | null>(null);
 
-  const passwordCompStruct =  ComponentDispatchStruct(
+  const passwordCompStruct = ComponentDispatchStruct(
     ObeseBarDefaultStyles,
     "Enter a password not over 9 characters"
   );
-  
-  const mailCompStruct =  ComponentDispatchStruct(
+
+  const mailCompStruct = ComponentDispatchStruct(
     ObeseBarDefaultStyles,
     "Enter your email(e.g. example@example.org)"
   );
-  const passwordRepeatCompStruct =  ComponentDispatchStruct(
+  const passwordRepeatCompStruct = ComponentDispatchStruct(
     ObeseBarDefaultStyles,
     "Repeat password"
   );
-  const securityTextCompStruct =  ComponentDispatchStruct(
+  const securityTextCompStruct = ComponentDispatchStruct(
     ObeseBarDefaultStyles,
     "Enter arbitrary text not surpassing 32 characters, do save it somewhere secure and not lose it"
   );
@@ -41,7 +41,7 @@ export default function RegisterSuccess() {
 
   const [submitted, setSubmitted] = useState(false);
   const [responseStatus, setResponseStatus] = useState(0);
-  
+
   const onSubmitClick = useCallback(() => {
     const registerInterface: IDoRegister = {
       password: "",
@@ -50,7 +50,6 @@ export default function RegisterSuccess() {
       ecdhPublic: "",
       secText: "",
     };
-    
 
     const passwordHash = DoPasswordOperations(
       passwordCompStruct,
@@ -58,14 +57,16 @@ export default function RegisterSuccess() {
     );
 
     if (passwordHash === "") {
-      return 
+      console.error("err")
+      return;
     }
-    registerInterface.password = passwordHash //password stuff ends here
+    registerInterface.password = passwordHash; //password stuff ends here
 
+    if (DoCheckMailValidity(mailCompStruct)) {
+      
+      registerInterface.email = mailCompStruct.getRefContent().innerHTML;
+    } else return ;//mail stuff ends here
 
-    if (!DoCheckMailValidity(mailCompStruct)) {
-      registerInterface.email = mailCompStruct.getRefContent().innerHTML
-    } //mail stuff ends here
 
     GenerateKeys(securityTextCompStruct)
       .then(({ code, ecdhPub }) => {
@@ -83,7 +84,7 @@ export default function RegisterSuccess() {
       })
       .catch((e: Error) => {
         console.error(e);
-        throw e
+        throw e;
       });
   }, []);
   const defaultRender = //this is probably not a good idea...
@@ -165,7 +166,12 @@ export default function RegisterSuccess() {
 
   useEffect(() => {
     setRender(defaultRender);
-  }, []);
+  }, [
+    securityTextCompStruct.text,
+    passwordCompStruct.text,
+    passwordRepeatCompStruct.text,
+    mailCompStruct.text,
+  ]); //TODO side effect doesn't trigger when same value is assigned 
   return !submitted ? (
     render
   ) : (

@@ -1,4 +1,4 @@
-import ComponentDispatchStruct from "../Components/ComponentDispatchStruct";
+import { ComponentDispatchStructType } from "../Components/ComponentDispatchStruct";
 import { StatusCodes, ERR_MODE_STYLES } from "./utils";
 
 export const MAIL_FIELDNAME = "email";
@@ -7,7 +7,11 @@ function CheckMailValidity(mailRef: HTMLDivElement | null): StatusCodes {
   if (mailRef === null) {
     return StatusCodes.ErrNull;
   }
-  const mail = mailRef.innerHTML;
+  const mail = mailRef.innerText;
+
+  if (mail.length < 5) {
+    return StatusCodes.ErrMailMalformed;
+  }
 
   if (/\s/.test(mail)) {
     return StatusCodes.ErrWhiteSpace;
@@ -24,7 +28,7 @@ function CheckMailValidity(mailRef: HTMLDivElement | null): StatusCodes {
 }
 
 export function DoCheckMailValidity(
-  mailCompStruct: ComponentDispatchStruct
+  mailCompStruct: ComponentDispatchStructType
 ): boolean {
   const mailRef = mailCompStruct.getRef();
 

@@ -13,17 +13,17 @@ export function DoPasswordOperations(
 ): string {
 
   const passwd = passwordCompStruct.getRef()
-  const passwdRepeat = passwordCompStruct.getRef()
+  const passwdRepeat = passwordRepeatCompStruct.getRef()
 
   passwordRepeatCompStruct.setStyles(passwordRepeatCompStruct.originalStyles);
   passwordCompStruct.setStyles(passwordCompStruct.originalStyles);
 
-  if (passwd.current === null || passwordCompStruct.getRefContent().innerText ) {
+  if (passwd.current === null || passwordCompStruct.getRefContent().innerText === "" ) {
     passwordRepeatCompStruct.setText(StatusCodes.ErrNull);
     passwordCompStruct.setStyles(ERR_MODE_STYLES);
     return "";
   }
-  if (passwdRepeat.current === null || passwordCompStruct.getRefContent().innerText) {
+  if (passwdRepeat.current === null || passwordCompStruct.getRefContent().innerText === "") {
     passwordRepeatCompStruct.setStyles(ERR_MODE_STYLES);
     passwordRepeatCompStruct.setText(StatusCodes.ErrNull);
     return "";
@@ -36,9 +36,10 @@ export function DoPasswordOperations(
     passwordRepeatContent
   );
   if (code !== StatusCodes.Success) {
-    passwordRepeatCompStruct.setText(code);
+    passwordCompStruct.setText(code);
     passwordCompStruct.setStyles(ERR_MODE_STYLES);
     if (code === StatusCodes.ErrDontMatch) {
+      console.error("err")
       passwordRepeatCompStruct.setStyles(ERR_MODE_STYLES);
 
       passwordRepeatCompStruct.setText(code);
@@ -63,6 +64,7 @@ export function CheckPasswordValidity(
     return { code: StatusCodes.ErrWhiteSpace, data: "" };
   }
   if (p1 !== p2) {
+    console.error("no match")
     return { code: StatusCodes.ErrDontMatch, data: "" };
   }
   return { code: StatusCodes.Success, data: CreatePasswordHash(p1) };

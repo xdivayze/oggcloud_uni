@@ -5,7 +5,7 @@ import { sha256 } from "@noble/hashes/sha256";
 
 import { Buffer } from "buffer/";
 import { ERR_MODE_STYLES, StatusCodes } from "./utils";
-import  { ComponentDispatchStructType } from "../Components/ComponentDispatchStruct";
+import { ComponentDispatchStructType } from "../Components/ComponentDispatchStruct";
 
 export const ECDH_PRIVATE_STORAGE_FIELD = "ecdhPrivate";
 export const AES_MASTERKEY_STORAGE_FIELD = "masterKey";
@@ -30,7 +30,7 @@ export default async function GenerateKeys(
 
   const securityText = securityTextE.current.innerText;
   if (securityText.trim().length < 16) {
-    securityTextCompStruct.setText(StatusCodes.ErrNull);
+    securityTextCompStruct.setText(StatusCodes.ErrSecurityTextTooShort);
     securityTextCompStruct.setStyles(ERR_MODE_STYLES);
     return { code: StatusCodes.ErrSecurityTextTooShort };
   }
