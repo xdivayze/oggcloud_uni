@@ -56,30 +56,33 @@ export default function RegisterSuccess() {
       passwordRepeatCompStruct
     );
 
-    passwordHash !== "" ? (registerInterface.password = passwordHash) : void 0; //password stuff ends here
+    if (passwordHash === "") {
+      return 
+    }
+    registerInterface.password = passwordHash //password stuff ends here
 
-    DoCheckMailValidity(mailCompStruct)
-      ? (registerInterface.email = mailCompStruct.getRefContent().innerHTML)
-      : void 0; //mail stuff ends here
+
+    if (!DoCheckMailValidity(mailCompStruct)) {
+      registerInterface.email = mailCompStruct.getRefContent().innerHTML
+    } //mail stuff ends here
 
     GenerateKeys(securityTextCompStruct)
       .then(({ code, ecdhPub }) => {
-        code === StatusCodes.Success
-          ? (() => {
-              registerInterface.secText =
-                securityTextCompStruct.getRefContent().innerText;
-              registerInterface.ecdhPublic = ecdhPub as string;
-              DoRegister(registerInterface)
-                .then((v) => {
-                  setResponseStatus(v as unknown as number);
-                })
-                .catch((e) => console.error(e));
-              setSubmitted(true);
-            })()
-          : void 0; //encryption stuff ends here
+        if (code === StatusCodes.Success) {
+          registerInterface.secText =
+            securityTextCompStruct.getRefContent().innerText;
+          registerInterface.ecdhPublic = ecdhPub as string;
+          DoRegister(registerInterface)
+            .then((v) => {
+              setResponseStatus(v as unknown as number);
+            })
+            .catch((e) => console.error(e));
+          setSubmitted(true);
+        } //encryption stuff ends here
       })
       .catch((e: Error) => {
         console.error(e);
+        throw e
       });
   }, []);
   const defaultRender = //this is probably not a good idea...
@@ -111,11 +114,11 @@ export default function RegisterSuccess() {
               <div className="w-1/2">
                 <div className="w-full">
                   <ObeseBar
-                    refPassed={mailCompStruct.getRef()}
+                    refPassed={passwordCompStruct.getRef()}
                     height="min-h-[110px]"
-                    color={mailCompStruct.styles}
+                    color={passwordCompStruct.styles}
                     contentEditable={true}
-                    text={mailCompStruct.text}
+                    text={passwordCompStruct.text}
                   />
                 </div>
               </div>

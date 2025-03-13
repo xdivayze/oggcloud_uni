@@ -1,5 +1,5 @@
-import { Dispatch, JSX, RefObject, SetStateAction } from "react";
-import { IDoRegister } from "./utils";
+import { Dispatch, RefObject, SetStateAction } from "react";
+import { ECDH_PUB_FIELDNAME, EMAIL_FIELDNAME, IDoRegister, PASSWORD_FIELDNAME, REFERRAL_CODE_FIELDNAME } from "./utils";
 import { Buffer } from "buffer/";
 export interface ComponentDispatchStruct {
   setStyle: Dispatch<SetStateAction<string>>;
@@ -14,10 +14,10 @@ export async function DoRegister(
   const registerEndpoint = "/api/user/register";
 
   const jsonBody = {
-    email: iDoRegister.email,
-    referralCode: iDoRegister.referralCode,
-    password: iDoRegister.password,
-    ecdhPublic: Buffer.from(iDoRegister.ecdhPublic).toString("hex"),
+    [EMAIL_FIELDNAME]: iDoRegister.email,
+    [REFERRAL_CODE_FIELDNAME]: iDoRegister.referralCode,
+    [PASSWORD_FIELDNAME]: iDoRegister.password,
+    [ECDH_PUB_FIELDNAME]: Buffer.from(iDoRegister.ecdhPublic).toString("hex"),
   };
 
   const req = await fetch(registerEndpoint, {

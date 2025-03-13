@@ -1,55 +1,29 @@
-import { useEffect,  } from "react";
+import { useEffect } from "react";
 import Navbar from "../../Navbar/Navbar";
 import ObeseBar from "../Register/Components/ObeseBar";
 
 import ComponentDispatchStruct from "../Register/Components/ComponentDispatchStruct";
+import { ObeseBarDefaultStyles } from "../Register/Services/utils";
 
 export default function Login() {
   useEffect(() => {}, []); //TODO check for saved sign-in
 
-  const defaultStyles =
-    "text-white bg-teal-ogg-1 hover:text-white hover:bg-indigo-950 text-2xl";
+  const defaultStyles = ObeseBarDefaultStyles;
 
   const emailCompStruct = new ComponentDispatchStruct(
     defaultStyles,
     "Enter your email(e.g. example@example.org)"
   );
 
-  // const [emailText, setEmailText] = useState(
-  //   "Enter your email(e.g. example@example.org)"
-  // );
-  // const [emailStyles, setEmailStyles] = useState(
-  //   "text-white bg-teal-ogg-1 hover:text-white hover:bg-indigo-950 text-2xl"
-  // );
-  // const emailRef = useRef<HTMLDivElement>(null);
-
-  // const emailCompStruct: ComponentDispatchStruct = {
-  //   setStyle: setEmailStyles,
-  //   setText: setEmailText,
-  //   compRef: emailRef,
-  //   originalStyle: useRef(emailStyles).current,
-  // };
-
   const passwordCompStruct = new ComponentDispatchStruct(
     defaultStyles,
     "Enter your password"
   );
 
-  // const [passwordText, setPasswordText] = useState("Enter your password");
-  // const [passwordStyles, setPasswordStyles] = useState(
-  //   "text-white bg-teal-ogg-1 hover:text-white hover:bg-indigo-950 text-2xl"
-  // );
-  // const passwordRef = useRef<HTMLDivElement>(null);
-  // const passwordCompStruct: ComponentDispatchStruct = {
-  //   setStyle: setPasswordStyles,
-  //   setText: setPasswordText,
-  //   compRef: passwordRef,
-  //   originalStyle: useRef(passwordStyles).current,
-  // };
-
-  // const secTextCompStruct: ComponentDispatchStruct = {
-
-  // }
+  const securityTextCompStruct = new ComponentDispatchStruct(ObeseBarDefaultStyles,
+    "Enter your security txt"
+    
+  );
 
   return (
     <div className="w-full mx-7">
@@ -85,6 +59,16 @@ export default function Login() {
           </div>
           <div className="px-40 flex flex-row w-full space-x-[300px]">
             <div className="w-1/2 mt-6">
+              <ObeseBar
+                refPassed={securityTextCompStruct.getRef()}
+                height="min-h-[370px]"
+                color={securityTextCompStruct.styles}
+                text={securityTextCompStruct.text}
+                contentEditable={true}
+              />
+            </div>
+            <div className="w-1/2 mt-6">
+              <div className="w-full mt-auto"></div>
             </div>
           </div>
         </div>

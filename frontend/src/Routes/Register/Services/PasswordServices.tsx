@@ -18,12 +18,13 @@ export function DoPasswordOperations(
   passwordRepeatCompStruct.setStyles(passwordRepeatCompStruct.originalStyles);
   passwordCompStruct.setStyles(passwordCompStruct.originalStyles);
 
-  if (passwd.current === null) {
+  if (passwd.current === null || passwordCompStruct.getRefContent().innerText ) {
+    console.error("aaa")
     passwordRepeatCompStruct.setText(StatusCodes.ErrNull);
     passwordCompStruct.setStyles(ERR_MODE_STYLES);
     return "";
   }
-  if (passwdRepeat.current === null) {
+  if (passwdRepeat.current === null || passwordCompStruct.getRefContent().innerText) {
     passwordRepeatCompStruct.setStyles(ERR_MODE_STYLES);
     passwordRepeatCompStruct.setText(StatusCodes.ErrNull);
     return "";
