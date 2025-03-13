@@ -5,14 +5,14 @@ import { sha256 } from "@noble/hashes/sha256";
 
 import { Buffer } from "buffer/";
 import { ERR_MODE_STYLES, StatusCodes } from "./utils";
-import ComponentDispatchStruct from "../Components/ComponentDispatchStruct";
+import  { ComponentDispatchStructType } from "../Components/ComponentDispatchStruct";
 
 export const ECDH_PRIVATE_STORAGE_FIELD = "ecdhPrivate";
 export const AES_MASTERKEY_STORAGE_FIELD = "masterKey";
 export const SEED_FIELD = "seed";
 
 export default async function GenerateKeys(
-  securityTextCompStruct: ComponentDispatchStruct
+  securityTextCompStruct: ComponentDispatchStructType
 ): Promise<{
   code: StatusCodes;
   masterKey?: Buffer | null;

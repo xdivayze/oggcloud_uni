@@ -10,17 +10,17 @@ export default function Login() {
 
   const defaultStyles = ObeseBarDefaultStyles;
 
-  const emailCompStruct = new ComponentDispatchStruct(
+  const emailCompStruct =  ComponentDispatchStruct(
     defaultStyles,
     "Enter your email(e.g. example@example.org)"
   );
 
-  const passwordCompStruct = new ComponentDispatchStruct(
+  const passwordCompStruct =  ComponentDispatchStruct(
     defaultStyles,
     "Enter your password"
   );
 
-  const securityTextCompStruct = new ComponentDispatchStruct(ObeseBarDefaultStyles,
+  const securityTextCompStruct =  ComponentDispatchStruct(ObeseBarDefaultStyles,
     "Enter your security txt"
     
   );

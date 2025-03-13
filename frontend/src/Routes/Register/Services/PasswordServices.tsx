@@ -3,13 +3,13 @@ import {
 
 } from "./Register";
 import { ERR_MODE_STYLES, StatusCodes } from "./utils";
-import ComponentDispatchStruct from "../Components/ComponentDispatchStruct";
+import  { ComponentDispatchStructType } from "../Components/ComponentDispatchStruct";
 
 const PASSWORD_FIELDNAME = "passwordHash";
 
 export function DoPasswordOperations(
-  passwordCompStruct: ComponentDispatchStruct,
-  passwordRepeatCompStruct: ComponentDispatchStruct
+  passwordCompStruct: ComponentDispatchStructType,
+  passwordRepeatCompStruct: ComponentDispatchStructType
 ): string {
 
   const passwd = passwordCompStruct.getRef()
@@ -19,7 +19,6 @@ export function DoPasswordOperations(
   passwordCompStruct.setStyles(passwordCompStruct.originalStyles);
 
   if (passwd.current === null || passwordCompStruct.getRefContent().innerText ) {
-    console.error("aaa")
     passwordRepeatCompStruct.setText(StatusCodes.ErrNull);
     passwordCompStruct.setStyles(ERR_MODE_STYLES);
     return "";

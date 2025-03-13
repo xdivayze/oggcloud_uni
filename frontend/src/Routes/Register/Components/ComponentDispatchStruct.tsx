@@ -1,33 +1,34 @@
-import { Dispatch, RefObject, SetStateAction, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
 
-export default class ComponentDispatchStruct {
-  private  setStyleState: Dispatch<SetStateAction<string>>;
-  public  styles: string;
-  private  setTextState: Dispatch<SetStateAction<string>>;
-  public  text: string;
-  public  originalStyles: string;
-  private  compRef: RefObject<HTMLDivElement | null>;
-  public constructor(initialStyles: string, initialText: string) {
-    [this.styles, this.setStyleState] = useState(initialStyles);
-    [this.text, this.setTextState] = useState(initialText);
-    this.originalStyles = useRef(initialStyles).current;
-    this.compRef = useRef<HTMLDivElement>(null);
-  }
-  public setStyles(newStyles: string) {
-    this.setStyleState(newStyles);
-  }
-  public setText(newText: string) {
-    this.setTextState(newText);
-  }
-  public getRef() {
-    return this.compRef;
-  }
-  public getRefContent() {
-    if (this.compRef === null) {
-        console.error("problem occurred")
-      throw new Error("reference null");
-    } else 
-    {return this.compRef.current as unknown as HTMLDivElement};
-  }
-  
+export default function ComponentDispatchStruct( //TODO doesn't update state ui test stuff in another project and implement maybe a reducer or switch to redux
+  initialStyles: string,
+  initialText: string
+): ComponentDispatchStructType {
+  const [styles, setStyles] = useState(initialStyles);
+  const [text, setText] = useState(initialText);
+  const originalStyles = useRef(initialStyles).current;
+  const compRef = useRef<HTMLDivElement>(null);
+
+  return {
+    styles,
+    text,
+    setStyles,
+    setText,
+    originalStyles,
+    getRef: () => compRef,
+    getRefContent: () => {
+      if (!compRef.current) throw new Error("reference null");
+      return compRef.current;
+    },
+  };
 }
+
+export interface ComponentDispatchStructType {
+  styles: string;
+  text: string;
+  setStyles: Dispatch<SetStateAction<string>>;
+  setText: Dispatch<SetStateAction<string>>;
+  originalStyles: string;
+  getRef: () => React.RefObject<HTMLDivElement | null>;
+  getRefContent: () => HTMLDivElement;
+};

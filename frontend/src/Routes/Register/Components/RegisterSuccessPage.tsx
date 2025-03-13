@@ -17,19 +17,20 @@ import PostRegister from "./PostRegister/PostRegister";
 export default function RegisterSuccess() {
   const submitRef = useRef<HTMLDivElement | null>(null);
 
-  const passwordCompStruct = new ComponentDispatchStruct(
+  const passwordCompStruct =  ComponentDispatchStruct(
     ObeseBarDefaultStyles,
     "Enter a password not over 9 characters"
   );
-  const mailCompStruct = new ComponentDispatchStruct(
+  
+  const mailCompStruct =  ComponentDispatchStruct(
     ObeseBarDefaultStyles,
     "Enter your email(e.g. example@example.org)"
   );
-  const passwordRepeatCompStruct = new ComponentDispatchStruct(
+  const passwordRepeatCompStruct =  ComponentDispatchStruct(
     ObeseBarDefaultStyles,
     "Repeat password"
   );
-  const securityTextCompStruct = new ComponentDispatchStruct(
+  const securityTextCompStruct =  ComponentDispatchStruct(
     ObeseBarDefaultStyles,
     "Enter arbitrary text not surpassing 32 characters, do save it somewhere secure and not lose it"
   );
