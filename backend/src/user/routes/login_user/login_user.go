@@ -1,4 +1,4 @@
-package loginuser
+package login_user
 
 import (
 	"fmt"
@@ -11,7 +11,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
-
 
 func LoginUser(c *gin.Context) {
 	log.SetPrefix("ERROR: ")

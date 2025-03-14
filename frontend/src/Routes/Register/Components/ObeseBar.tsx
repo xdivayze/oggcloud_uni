@@ -13,7 +13,7 @@ export default function ObeseBar({
   height: string;
   color: string;
   text: string;
-  refPassed: React.RefObject<any>;
+  refPassed: React.RefObject<HTMLDivElement | null>;
   onClick?: () => void;
   contentEditable: boolean;
 }) {

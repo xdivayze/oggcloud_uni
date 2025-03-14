@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Navbar from "../../Navbar/Navbar";
 import ObeseBar from "../Register/Components/ObeseBar";
 
@@ -10,20 +10,24 @@ export default function Login() {
 
   const defaultStyles = ObeseBarDefaultStyles;
 
-  const emailCompStruct =  ComponentDispatchStruct(
+  const emailCompStruct = ComponentDispatchStruct(
     defaultStyles,
     "Enter your email(e.g. example@example.org)"
   );
 
-  const passwordCompStruct =  ComponentDispatchStruct(
+  const passwordCompStruct = ComponentDispatchStruct(
     defaultStyles,
     "Enter your password"
   );
 
-  const securityTextCompStruct =  ComponentDispatchStruct(ObeseBarDefaultStyles,
+  const securityTextCompStruct = ComponentDispatchStruct(
+    ObeseBarDefaultStyles,
     "Enter your security txt"
-    
   );
+
+  const onSubmitClick = () => {
+    
+  };
 
   return (
     <div className="w-full mx-7">
@@ -67,8 +71,15 @@ export default function Login() {
                 contentEditable={true}
               />
             </div>
-            <div className="w-1/2 mt-6">
-              <div className="w-full mt-auto"></div>
+            <div className="w-1/2 mt-auto mb-2">
+              <ObeseBar
+                refPassed={useRef(null)}
+                height="min-h-[110px]"
+                color="text-white bg-indigo-800 hover:text-white hover:bg-red-600 items-center justify-center text-3xl"
+                text="LOGIN"
+                onClick={onSubmitClick}
+                contentEditable={false}
+              />
             </div>
           </div>
         </div>
