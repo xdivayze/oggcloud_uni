@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useRef, useState } from "react";
 
-export default function ComponentDispatchStruct( //TODO doesn't update state ui test stuff in another project and implement maybe a reducer or switch to redux
+export default function ComponentDispatchStruct( 
   initialStyles: string,
   initialText: string
 ): ComponentDispatchStructType {
