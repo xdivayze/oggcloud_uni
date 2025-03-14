@@ -1,8 +1,8 @@
-import { MAIL_FIELDNAME } from "../Register/Services/MailServices";
-import { PASSWORD_FIELDNAME } from "../Register/Services/utils";
+import { MAIL_FIELDNAME } from "../../Register/Services/MailServices";
+import { PASSWORD_FIELDNAME } from "../../Register/Services/utils";
 import { AUTH_CODE_FIELDNAME, EXPIRES_AT_FIELDNAME } from "./constants";
 
-export async function Login(password: string, mail: string) {
+export async function SendLoginRequest(password: string, mail: string) {
   const body = JSON.stringify({
     [PASSWORD_FIELDNAME]: password,
     [MAIL_FIELDNAME]: mail,
@@ -36,6 +36,7 @@ export async function Login(password: string, mail: string) {
     [AUTH_CODE_FIELDNAME] : authCode,
     [EXPIRES_AT_FIELDNAME]: respBody.EXPIRES_AT_FIELDNAME
   }) )
+  
   
   return authCode
 

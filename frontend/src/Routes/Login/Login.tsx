@@ -4,8 +4,14 @@ import ObeseBar from "../Register/Components/ObeseBar";
 
 import ComponentDispatchStruct from "../Register/Components/ComponentDispatchStruct";
 import { ObeseBarDefaultStyles } from "../Register/Services/utils";
+import { ValidatePassword } from "./Service/PasswordService";
+import { DoCheckMailValidity } from "../Register/Services/MailServices";
+import { SendLoginRequest } from "./Service/Login";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../Protected/AuthProvider";
 
 export default function Login() {
+  //TODO opt to save info
   useEffect(() => {}, []); //TODO check for saved sign-in
 
   const defaultStyles = ObeseBarDefaultStyles;
@@ -25,8 +31,28 @@ export default function Login() {
     "Enter your security txt"
   );
 
+  const navigate = useNavigate();
+
   const onSubmitClick = () => {
-    
+    try {
+      ValidatePassword(passwordCompStruct);
+      if (!DoCheckMailValidity(emailCompStruct)) {
+        throw new Error("mail invalid");
+      }
+    } catch (e: any) {
+      throw e;
+    }
+    SendLoginRequest(
+      passwordCompStruct.getRefContent().innerText,
+      emailCompStruct.getRefContent().innerText
+    ).catch((e: Error) => {
+      navigate("/err?message=" + e.message.trim());
+      throw e;
+    }).then((authCode: string) => {
+      useAuth().login(authCode)
+      navigate("/user/profile") //TODO put under protected layout
+    });
+   
   };
 
   return (
