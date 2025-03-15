@@ -13,7 +13,8 @@ func CheckPasswordHash(passwordHex string, user *model.User) error {
 	if err != nil {
 		return fmt.Errorf("error occurred while decoding password hex string:\n\t%w", err)
 	}
-	if err = bcrypt.CompareHashAndPassword([]byte(*user.PasswordHash), passwordBytes); err != nil {
+	bcryptHash := []byte(*user.PasswordHash)
+	if err = bcrypt.CompareHashAndPassword(bcryptHash, passwordBytes); err != nil {
 		return fmt.Errorf("password no match, error occurred:\n\t%w", err)
 	}
 	return nil

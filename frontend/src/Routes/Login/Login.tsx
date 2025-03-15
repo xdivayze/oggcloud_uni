@@ -13,6 +13,7 @@ import { useAuth } from "../../Protected/AuthProvider";
 export default function Login() {
   //TODO opt to save info
   useEffect(() => {}, []); //TODO check for saved sign-in
+  const auth = useAuth();
 
   const defaultStyles = ObeseBarDefaultStyles;
 
@@ -33,7 +34,7 @@ export default function Login() {
 
   const navigate = useNavigate();
 
-  const onSubmitClick = () => {
+  const onSubmitClick = async () => {
     try {
       ValidatePassword(passwordCompStruct);
       if (!DoCheckMailValidity(emailCompStruct)) {
@@ -45,14 +46,15 @@ export default function Login() {
     SendLoginRequest(
       passwordCompStruct.getRefContent().innerText,
       emailCompStruct.getRefContent().innerText
-    ).catch((e: Error) => {
-      navigate("/err?message=" + e.message.trim());
-      throw e;
-    }).then((authCode: string) => {
-      useAuth().login(authCode)
-      navigate("/user/profile") //TODO put under protected layout
-    });
-   
+    )
+      .catch((e: Error) => {
+        navigate("/err?message=" + e.message.trim());
+        throw e;
+      })
+      .then((a: string) => {
+        auth.login(a);
+        navigate("/user/profile"); //TODO put under protected layout
+      });
   };
 
   return (
