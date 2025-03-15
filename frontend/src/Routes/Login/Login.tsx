@@ -1,29 +1,34 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Navbar from "../../Navbar/Navbar";
 import ObeseBar from "../Register/Components/ObeseBar";
 
 import ComponentDispatchStruct from "../Register/Components/ComponentDispatchStruct";
-import { ObeseBarDefaultStyles } from "../Register/Services/utils";
+import {
+  GetSaveUserText,
+  ObeseBarDefaultStyles,
+} from "../Register/Services/utils";
 import { ValidatePassword } from "./Service/PasswordService";
 import { DoCheckMailValidity } from "../Register/Services/MailServices";
 import { SendLoginRequest } from "./Service/Login";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../Protected/AuthProvider";
+import SubmitButton from "../Register/Components/SubmitButton";
+import { SAVED_FIELDNAME } from "./Service/constants";
 
 export default function Login() {
-  //TODO opt to save info
-  useEffect(() => {}, []); //TODO check for saved sign-in
   const auth = useAuth();
 
-  const defaultStyles = ObeseBarDefaultStyles;
+  const [save, setSave] = useState(false);
+  
+  useEffect(() => {}, []); //TODO check for saved sign-in
 
   const emailCompStruct = ComponentDispatchStruct(
-    defaultStyles,
+    ObeseBarDefaultStyles,
     "Enter your email(e.g. example@example.org)"
   );
 
   const passwordCompStruct = ComponentDispatchStruct(
-    defaultStyles,
+    ObeseBarDefaultStyles,
     "Enter your password"
   );
 
@@ -53,6 +58,12 @@ export default function Login() {
       })
       .then((a: string) => {
         auth.login(a);
+        save
+          ? window.localStorage.setItem(
+              SAVED_FIELDNAME,
+              GetSaveUserText(emailCompStruct.getRefContent().innerText)
+            )
+          : void 0;
         navigate("/user/profile"); //TODO put under protected layout
       });
   };
@@ -100,14 +111,7 @@ export default function Login() {
               />
             </div>
             <div className="w-1/2 mt-auto mb-2">
-              <ObeseBar
-                refPassed={useRef(null)}
-                height="min-h-[110px]"
-                color="text-white bg-indigo-800 hover:text-white hover:bg-red-600 items-center justify-center text-3xl"
-                text="LOGIN"
-                onClick={onSubmitClick}
-                contentEditable={false}
-              />
+              <SubmitButton onSubmitClick={onSubmitClick} setSave={setSave} />
             </div>
           </div>
         </div>

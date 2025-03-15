@@ -1,3 +1,5 @@
+import { SAVED_FIELDNAME } from "../../Login/Service/constants";
+
 export const ERR_MODE_STYLES =
   "bg-red-700 hover:text-white hover:bg-indigo-950 text-2xl text-white";
 
@@ -27,4 +29,11 @@ export enum StatusCodes {
   ErrNull = "Field is empty",
   ErrSecurityTextTooShort="Security text must be over 16 characters",
 
+}
+
+export function GetSaveUserText(email:string) {
+  return JSON.stringify({
+    [SAVED_FIELDNAME]: true,
+    [EMAIL_FIELDNAME]: email 
+  })
 }
