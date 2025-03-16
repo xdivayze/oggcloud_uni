@@ -38,7 +38,7 @@ export default async function GenerateKeys(
     .update(securityText.trim())
     .digest();
 
-  const derivedKey = hkdf(sha256, securityHash, "", "ECDH Key", 32);
+  const derivedKey = hkdf(sha256, securityHash, "", "Master Key", 32);
 
   const ecdhSecret = await crypto.subtle.generateKey(
     { name: "ECDH", namedCurve: "P-256" },
