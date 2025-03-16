@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect,  useState } from "react";
 import Navbar from "../../Navbar/Navbar";
 import ObeseBar from "../Register/Components/ObeseBar";
 
@@ -19,7 +19,7 @@ export default function Login() {
   const auth = useAuth();
 
   const [save, setSave] = useState(false);
-  
+
   useEffect(() => {}, []); //TODO check for saved sign-in
 
   const emailCompStruct = ComponentDispatchStruct(
