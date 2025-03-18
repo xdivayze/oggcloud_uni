@@ -1,4 +1,4 @@
-import { JSX, useCallback, useEffect, useState } from "react";
+import { JSX, useCallback, useEffect, useRef, useState } from "react";
 import ObeseBar from "./ObeseBar";
 import Navbar from "../../../Navbar/Navbar";
 import { DoRegister } from "../Services/Register";
@@ -7,20 +7,14 @@ import { DoPasswordOperations } from "../Services/PasswordServices";
 import { DoCheckMailValidity } from "../Services/MailServices";
 import GenerateKeys from "../Services/KeyGenerationService";
 import {
-  GetSaveUserText,
   IDoRegister,
   ObeseBarDefaultStyles,
   StatusCodes,
 } from "../Services/utils";
 import ComponentDispatchStruct from "./ComponentDispatchStruct";
 import PostRegister from "./PostRegister/PostRegister";
-import SubmitButton from "./SubmitButton";
-import { SAVED_FIELDNAME } from "../../Login/Service/constants";
 
 export default function RegisterSuccess() {
-  //TODO pop-up asks do you want to save info with state
-  const [save, setSave] = useState(false);
-
   const passwordCompStruct = ComponentDispatchStruct(
     ObeseBarDefaultStyles,
     "Enter a password not over 9 characters"
@@ -81,12 +75,6 @@ export default function RegisterSuccess() {
               setResponseStatus(v as unknown as number);
             })
             .catch((e) => console.error(e));
-          save
-            ? window.localStorage.setItem(
-                SAVED_FIELDNAME,
-                GetSaveUserText(registerInterface.email)
-              )
-            : void 0;
           setSubmitted(true);
         } //encryption stuff ends here
       })
@@ -156,9 +144,13 @@ export default function RegisterSuccess() {
                   />
                 </div>
                 <div className="w-full mt-auto">
-                  <SubmitButton
-                    setSave={setSave}
-                    onSubmitClick={onSubmitClick}
+                  <ObeseBar
+                    refPassed={useRef(null)}
+                    height="min-h-[110px]"
+                    color="text-white bg-indigo-800 hover:text-white hover:bg-red-600 items-center justify-center text-3xl"
+                    text="REGISTER"
+                    onClick={onSubmitClick}
+                    contentEditable={false}
                   />
                 </div>
               </div>

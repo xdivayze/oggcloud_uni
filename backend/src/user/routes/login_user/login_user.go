@@ -23,10 +23,12 @@ func LoginUser(c *gin.Context) {
 
 	var passwordHex string
 	var email string
+	var save bool
 
 	fieldMap := make(map[string]interface{})
 	fieldMap[constants.EMAIL_FIELDNAME] = &email
 	fieldMap[constants.PASSWORD_FIELDNAME] = &passwordHex
+	fieldMap[constants.SAVED_FIELDNAME] = &save
 	s := functions.DoFieldAssign(c, jsonData, fieldMap)
 	if s != 0 {
 		log.Printf("error doing field assignments, returned:%d", s)

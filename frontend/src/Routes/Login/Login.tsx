@@ -1,19 +1,15 @@
-import { useEffect,  useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../../Navbar/Navbar";
 import ObeseBar from "../Register/Components/ObeseBar";
 
 import ComponentDispatchStruct from "../Register/Components/ComponentDispatchStruct";
-import {
-  GetSaveUserText,
-  ObeseBarDefaultStyles,
-} from "../Register/Services/utils";
+import { ObeseBarDefaultStyles } from "../Register/Services/utils";
 import { ValidatePassword } from "./Service/PasswordService";
 import { DoCheckMailValidity } from "../Register/Services/MailServices";
 import { SendLoginRequest } from "./Service/Login";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../Protected/AuthProvider";
-import SubmitButton from "../Register/Components/SubmitButton";
-import { SAVED_FIELDNAME } from "./Service/constants";
+import SubmitButton from "./Components/SubmitButton";
 
 export default function Login() {
   const auth = useAuth();
@@ -50,7 +46,8 @@ export default function Login() {
     }
     SendLoginRequest(
       passwordCompStruct.getRefContent().innerText,
-      emailCompStruct.getRefContent().innerText
+      emailCompStruct.getRefContent().innerText,
+      save
     )
       .catch((e: Error) => {
         navigate("/err?message=" + e.message.trim());
@@ -58,12 +55,6 @@ export default function Login() {
       })
       .then((a: string) => {
         auth.login(a);
-        save
-          ? window.localStorage.setItem(
-              SAVED_FIELDNAME,
-              GetSaveUserText(emailCompStruct.getRefContent().innerText)
-            )
-          : void 0;
         navigate("/user/profile"); //TODO put under protected layout
       });
   };
