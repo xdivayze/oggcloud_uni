@@ -19,8 +19,8 @@ function App() {
               <RegisterRefer submitColor="bg-indigo-800" submitText="SUBMIT" />
             }
           />
+          <Route path="login" element={<Login />}/>
           <Route path="/register/:id" element={<Register />} />
-          <Route path="/test-route" element={<Login />} /> 
           <Route path="*" element={<ErrorPage />} />
         </Route>
         

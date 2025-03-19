@@ -14,7 +14,7 @@ import (
 func CreateInstance(userID uuid.UUID) (*AuthorizationCode, error) {
 	bytes := make([]byte, CODE_LENGTH)
 	if _, err := rand.Read(bytes); err != nil {
-		return nil, fmt.Errorf("error occured while reading from random buffer:\n\t%w", err)
+		return nil, fmt.Errorf("error occurred while reading from random buffer:\n\t%w", err)
 	}
 	validUntil := time.Now().Add(CODE_VALIDATION_LENGTH_MIN * time.Minute)
 	return &AuthorizationCode{
@@ -53,7 +53,7 @@ func RetrieveFromDB(code string) (*AuthorizationCode,error) {
 	auth := AuthorizationCode{}
 	res := db.DB.Where("Code = ?", code).First(&auth)
 	if res.Error != nil {
-		return nil, fmt.Errorf("error occured while retrieving instance from db:\n\t%w", res.Error)
+		return nil, fmt.Errorf("error occurred while retrieving instance from db:\n\t%w", res.Error)
 	}
 	return &auth, nil
 }
@@ -66,7 +66,7 @@ func DeleteFromDB(inst *AuthorizationCode) error {
 func SaveToDB(inst *AuthorizationCode) (error) {
 	db := db.DB
 	if res := db.Create(inst); res.Error != nil {
-		return fmt.Errorf("error occured when trying to insert value:\n\t%w", res.Error)
+		return fmt.Errorf("error occurred when trying to insert value:\n\t%w", res.Error)
 	}
 	return nil
 	

@@ -15,8 +15,6 @@ import ComponentDispatchStruct from "./ComponentDispatchStruct";
 import PostRegister from "./PostRegister/PostRegister";
 
 export default function RegisterSuccess() {
-  const submitRef = useRef<HTMLDivElement | null>(null);
-
   const passwordCompStruct = ComponentDispatchStruct(
     ObeseBarDefaultStyles,
     "Enter a password not over 9 characters"
@@ -57,16 +55,14 @@ export default function RegisterSuccess() {
     );
 
     if (passwordHash === "") {
-      console.error("err")
+      console.error("err");
       return;
     }
     registerInterface.password = passwordHash; //password stuff ends here
 
     if (DoCheckMailValidity(mailCompStruct)) {
-      
       registerInterface.email = mailCompStruct.getRefContent().innerHTML;
-    } else return ;//mail stuff ends here
-
+    } else return; //mail stuff ends here
 
     GenerateKeys(securityTextCompStruct)
       .then(({ code, ecdhPub }) => {
@@ -149,7 +145,7 @@ export default function RegisterSuccess() {
                 </div>
                 <div className="w-full mt-auto">
                   <ObeseBar
-                    refPassed={submitRef}
+                    refPassed={useRef(null)}
                     height="min-h-[110px]"
                     color="text-white bg-indigo-800 hover:text-white hover:bg-red-600 items-center justify-center text-3xl"
                     text="REGISTER"
@@ -171,7 +167,7 @@ export default function RegisterSuccess() {
     passwordCompStruct.text,
     passwordRepeatCompStruct.text,
     mailCompStruct.text,
-  ]); //TODO side effect doesn't trigger when same value is assigned 
+  ]); //TODO side effect doesn't trigger when same value is assigned
   return !submitted ? (
     render
   ) : (

@@ -1,4 +1,4 @@
-package loginuser
+package login_user
 
 import (
 	"fmt"
@@ -12,7 +12,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-
 func LoginUser(c *gin.Context) {
 	log.SetPrefix("ERROR: ")
 	var jsonData map[string]interface{}
@@ -24,6 +23,7 @@ func LoginUser(c *gin.Context) {
 
 	var passwordHex string
 	var email string
+
 
 	fieldMap := make(map[string]interface{})
 	fieldMap[constants.EMAIL_FIELDNAME] = &email

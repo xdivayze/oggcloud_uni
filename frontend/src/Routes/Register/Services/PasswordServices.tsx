@@ -5,8 +5,6 @@ import {
 import { ERR_MODE_STYLES, StatusCodes } from "./utils";
 import  { ComponentDispatchStructType } from "../Components/ComponentDispatchStruct";
 
-const PASSWORD_FIELDNAME = "passwordHash";
-
 export function DoPasswordOperations(
   passwordCompStruct: ComponentDispatchStructType,
   passwordRepeatCompStruct: ComponentDispatchStructType
@@ -46,7 +44,6 @@ export function DoPasswordOperations(
     }
     return "";
   }
-  window.localStorage.setItem(PASSWORD_FIELDNAME, data);
   return data;
 }
 

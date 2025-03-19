@@ -1,4 +1,4 @@
-package loginuser
+package login_user
 
 import (
 	"encoding/hex"
@@ -8,13 +8,14 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func CheckPasswordHash(passwordhex string, user *model.User) error {
-	passwordbytes, err := hex.DecodeString(passwordhex)
+func CheckPasswordHash(passwordHex string, user *model.User) error {
+	passwordBytes, err := hex.DecodeString(passwordHex)
 	if err != nil {
-		return fmt.Errorf("error occured while decoding password hex string:\n\t%w", err)
+		return fmt.Errorf("error occurred while decoding password hex string:\n\t%w", err)
 	}
-	if err = bcrypt.CompareHashAndPassword([]byte(*user.PasswordHash), passwordbytes); err != nil {
-		return fmt.Errorf("password no match, error occured:\n\t%w", err)
+	bcryptHash := []byte(*user.PasswordHash)
+	if err = bcrypt.CompareHashAndPassword(bcryptHash, passwordBytes); err != nil {
+		return fmt.Errorf("password no match, error occurred:\n\t%w", err)
 	}
 	return nil
 

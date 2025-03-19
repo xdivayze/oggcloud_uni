@@ -1,4 +1,4 @@
-package loginuser_test
+package login_user_test
 
 import (
 	"bytes"

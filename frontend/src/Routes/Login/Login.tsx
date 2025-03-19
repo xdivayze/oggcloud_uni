@@ -1,29 +1,57 @@
-import { useEffect } from "react";
 import Navbar from "../../Navbar/Navbar";
 import ObeseBar from "../Register/Components/ObeseBar";
 
 import ComponentDispatchStruct from "../Register/Components/ComponentDispatchStruct";
 import { ObeseBarDefaultStyles } from "../Register/Services/utils";
+import { ValidatePassword } from "./Service/PasswordService";
+import { DoCheckMailValidity } from "../Register/Services/MailServices";
+import { SendLoginRequest } from "./Service/Login";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../Protected/AuthProvider";
+import { useRef } from "react";
 
 export default function Login() {
-  useEffect(() => {}, []); //TODO check for saved sign-in
+  const auth = useAuth();
 
-  const defaultStyles = ObeseBarDefaultStyles;
-
-  const emailCompStruct =  ComponentDispatchStruct(
-    defaultStyles,
+  const emailCompStruct = ComponentDispatchStruct(
+    ObeseBarDefaultStyles,
     "Enter your email(e.g. example@example.org)"
   );
 
-  const passwordCompStruct =  ComponentDispatchStruct(
-    defaultStyles,
+  const passwordCompStruct = ComponentDispatchStruct(
+    ObeseBarDefaultStyles,
     "Enter your password"
   );
 
-  const securityTextCompStruct =  ComponentDispatchStruct(ObeseBarDefaultStyles,
+  const securityTextCompStruct = ComponentDispatchStruct(
+    ObeseBarDefaultStyles,
     "Enter your security txt"
-    
   );
+
+  const navigate = useNavigate();
+
+  const onSubmitClick = async () => {
+    try {
+      ValidatePassword(passwordCompStruct);
+      if (!DoCheckMailValidity(emailCompStruct)) {
+        throw new Error("mail invalid");
+      }
+    } catch (e: any) {
+      throw e;
+    }
+    SendLoginRequest(
+      passwordCompStruct.getRefContent().innerText,
+      emailCompStruct.getRefContent().innerText
+    )
+      .catch((e: Error) => {
+        navigate("/err?message=" + e.message.trim());
+        throw e;
+      })
+      .then((a: string) => {
+        auth.login(a);
+        navigate("/user/profile"); //TODO put under protected layout
+      });
+  };
 
   return (
     <div className="w-full mx-7">
@@ -67,8 +95,15 @@ export default function Login() {
                 contentEditable={true}
               />
             </div>
-            <div className="w-1/2 mt-6">
-              <div className="w-full mt-auto"></div>
+            <div className="w-1/2 mt-auto mb-2">
+              <ObeseBar
+                refPassed={useRef(null)}
+                height="min-h-[110px]"
+                color="text-white bg-indigo-800 hover:text-white hover:bg-red-600 items-center justify-center text-3xl"
+                text="REGISTER"
+                onClick={onSubmitClick}
+                contentEditable={false}
+              />
             </div>
           </div>
         </div>
