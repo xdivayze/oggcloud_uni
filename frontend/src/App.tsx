@@ -6,6 +6,7 @@ import RegisterRefer from "./Routes/Register/Components/RegisterRefer";
 import AuthProvider from "./Protected/AuthProvider";
 import ErrorPage from "./Routes/ErrorPage/ErrorPage";
 import Login from "./Routes/Login/Login";
+import Profile from "./Routes/Profile/Profile";
 
 function App() {
   return (
@@ -19,11 +20,11 @@ function App() {
               <RegisterRefer submitColor="bg-indigo-800" submitText="SUBMIT" />
             }
           />
-          <Route path="login" element={<Login />}/>
+          <Route path="login" element={<Login />} />
           <Route path="/register/:id" element={<Register />} />
           <Route path="*" element={<ErrorPage />} />
+          <Route path="/testing-route" element={<Profile />} />
         </Route>
-        
       </Routes>
     </AuthProvider>
   );
