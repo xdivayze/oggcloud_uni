@@ -59,6 +59,11 @@ export default async function GenerateKeys(
   const exportedECDHPrivate = await crypto.subtle.exportKey(
     "pkcs8",
     ecdhSecret.privateKey
+  ); //! not used
+
+  window.localStorage.setItem(
+    ECDH_PRIVATE_STORAGE_FIELD,
+    Buffer.from(exportedECDHPrivate).toString("hex")//! not used
   );
 
   window.localStorage.setItem(
