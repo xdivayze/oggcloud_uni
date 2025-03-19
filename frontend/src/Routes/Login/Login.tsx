@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import Navbar from "../../Navbar/Navbar";
 import ObeseBar from "../Register/Components/ObeseBar";
 
@@ -9,14 +8,10 @@ import { DoCheckMailValidity } from "../Register/Services/MailServices";
 import { SendLoginRequest } from "./Service/Login";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../Protected/AuthProvider";
-import SubmitButton from "./Components/SubmitButton";
+import { useRef } from "react";
 
 export default function Login() {
   const auth = useAuth();
-
-  const [save, setSave] = useState(false);
-
-  useEffect(() => {}, []); //TODO check for saved sign-in
 
   const emailCompStruct = ComponentDispatchStruct(
     ObeseBarDefaultStyles,
@@ -46,8 +41,7 @@ export default function Login() {
     }
     SendLoginRequest(
       passwordCompStruct.getRefContent().innerText,
-      emailCompStruct.getRefContent().innerText,
-      save
+      emailCompStruct.getRefContent().innerText
     )
       .catch((e: Error) => {
         navigate("/err?message=" + e.message.trim());
@@ -102,7 +96,14 @@ export default function Login() {
               />
             </div>
             <div className="w-1/2 mt-auto mb-2">
-              <SubmitButton onSubmitClick={onSubmitClick} setSave={setSave} />
+              <ObeseBar
+                refPassed={useRef(null)}
+                height="min-h-[110px]"
+                color="text-white bg-indigo-800 hover:text-white hover:bg-red-600 items-center justify-center text-3xl"
+                text="REGISTER"
+                onClick={onSubmitClick}
+                contentEditable={false}
+              />
             </div>
           </div>
         </div>

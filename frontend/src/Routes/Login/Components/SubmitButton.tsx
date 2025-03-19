@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useRef } from "react";
-import ObeseBar from "./ObeseBar";
+import ObeseBar from "../../Register/Components/ObeseBar";
 
 export default function SubmitButton({
   setSave,

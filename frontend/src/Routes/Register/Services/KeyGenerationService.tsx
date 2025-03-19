@@ -62,14 +62,6 @@ export default async function GenerateKeys(
   );
 
   window.localStorage.setItem(
-    AES_MASTERKEY_STORAGE_FIELD,
-    Buffer.from(derivedKey).toString("hex")
-  );
-  window.localStorage.setItem(
-    ECDH_PRIVATE_STORAGE_FIELD,
-    Buffer.from(exportedECDHPrivate).toString("hex")
-  );
-  window.localStorage.setItem(
     SEED_FIELD,
     securityTextCompStruct.getRefContent().innerText
   );

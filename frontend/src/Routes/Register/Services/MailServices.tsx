@@ -23,7 +23,6 @@ function CheckMailValidity(mailRef: HTMLDivElement | null): StatusCodes {
   if (mail.lastIndexOf(".") < atIndex) {
     return StatusCodes.ErrMailMalformed;
   }
-  window.localStorage.setItem(MAIL_FIELDNAME, mail);
   return StatusCodes.Success;
 }
 

@@ -11,7 +11,6 @@ const REFERRAL_CODE_FIELDNAME = "referralCode"
 const PASSWORD_FIELDNAME = "password"
 const EMAIL_FIELDNAME = "email"
 const ECDH_PUB_FIELDNAME = "ecdhPublic"
-const SAVED_FIELDNAME = "saved"
 
 var BACKEND_DIRECTORY string
 var DOTENV_PATH string
